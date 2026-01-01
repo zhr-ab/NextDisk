@@ -1,0 +1,54 @@
+﻿/* NextDisk 文件管理页面样式 */
+.input-field {
+    padding: 8px 12px;
+    border: 1px solid #4A90E2;
+    border-radius: 6px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 6px rgba(74, 144, 226, 0.08);
+    margin-right: 10px;
+}
+
+    .input-field:focus {
+        border-color: #357ABD;
+        box-shadow: 0 0 8px #4A90E233;
+    }
+
+.custom-file-label {
+    display: inline-block;
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.file-btn {
+    display: inline-block;
+    padding: 8px 20px;
+    background: #4A90E2;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
+    border: none;
+}
+
+    .file-btn:hover {
+        background: #357ABD;
+    }
+
+.upload-btn {
+    background: #4A90E2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-left: 10px;
+}
+
+    .upload-btn:hover {
+        background: #357ABD;
+    }

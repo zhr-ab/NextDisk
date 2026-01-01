@@ -46,6 +46,13 @@
     <Folder Include="NextDisk\templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="NextDisk\static\content\files.css" />
+    <Content Include="NextDisk\static\content\Final_setting.css" />
+    <Content Include="NextDisk\static\content\fs1.css" />
+    <Content Include="NextDisk\static\content\registered_successfully.css" />
+    <Content Include="NextDisk\static\content\signup.css" />
+    <Content Include="NextDisk\static\scripts\Final_setting.js" />
+    <Content Include="NextDisk\static\scripts\signup.js" />
     <Content Include="NextDisk\templates\desktop.html" />
     <Content Include="NextDisk\templates\error.html" />
     <Content Include="NextDisk\templates\files.html" />

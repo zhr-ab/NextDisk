@@ -1,0 +1,208 @@
+﻿/* Final_setting.css */
+:root {
+    --bg: #f0f3f8;
+    --window-bg: #ffffff;
+    --title-bg: linear-gradient(#f5f7fa,#e9eef6);
+    --border: #d0d7e3;
+}
+
+body {
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    padding: 24px;
+    color: #0f172a;
+}
+
+.actions {
+    margin-top: 18px;
+}
+
+#confirmBtn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+}
+
+    #confirmBtn:hover {
+        background: #1d4ed8;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+        transform: translateY(-1px);
+    }
+
+    #confirmBtn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+    }
+
+/* overlay 居中并覆盖页面 */
+.overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(2,6,23,0.45);
+    z-index: 9999;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 160ms ease-in-out, visibility 160ms ease-in-out;
+}
+
+    .overlay.show {
+        visibility: visible;
+        opacity: 1;
+    }
+
+/* 窗口容器 */
+.window {
+    width: 420px;
+    border-radius: 12px;
+    background: var(--window-bg);
+    border: 1px solid var(--border);
+    box-shadow: 0 12px 36px rgba(2,6,23,0.28);
+    overflow: hidden;
+    animation: windowFadeIn 0.3s ease;
+}
+
+@keyframes windowFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* 标题栏（修改颜色为深色） */
+.titlebar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, #1e293b, #334155); /* 深蓝色渐变 */
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.controls {
+    display: flex;
+    gap: 6px;
+}
+
+.ctrl {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    box-shadow: inset 0 -1px 0 rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .ctrl:hover {
+        transform: scale(1.1);
+    }
+
+    .ctrl.close {
+        background: #ff5f56;
+    }
+
+    .ctrl.min {
+        background: #ffbd2e;
+    }
+
+    .ctrl.max {
+        background: #27c93f;
+    }
+
+/* 标题文字颜色改为白色 */
+.title {
+    font-weight: 600;
+    font-size: 14px;
+    flex: 1;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+/* 内容区 */
+.content {
+    padding: 18px;
+}
+
+.label {
+    display: block;
+    margin-bottom: 6px;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* 输入框 —— 禁用时的视觉样式 */
+.input-window {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(15,23,42,0.06);
+    background: linear-gradient(#fbfdff,#f7fbff);
+    color: #111827;
+    font-size: 14px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+    .input-window:disabled {
+        color: #6b7280;
+        background: linear-gradient(#fafafa,#f3f4f6);
+        border: 1px solid rgba(15,23,42,0.04);
+        cursor: not-allowed;
+        outline: none;
+        box-shadow: none;
+        pointer-events: none;
+    }
+
+/* 小提示文字 */
+.hint {
+    margin-top: 8px;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.window-actions {
+    margin-top: 14px;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+    .window-actions button {
+        padding: 10px 15px;
+        border-radius: 6px;
+        border: 1px solid rgba(15,23,42,0.06);
+        background: #fff;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        min-width: 80px;
+    }
+
+    /* 确定按钮样式 */
+    .window-actions #winOk {
+        background: #2563eb;
+        color: #fff;
+        border: none;
+    }
+
+        .window-actions #winOk:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }

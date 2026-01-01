@@ -1,0 +1,521 @@
+﻿/* fs1.css */
+/* 复选框容器样式 */
+fieldset {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 15px 0;
+    background-color: #fafafa;
+    transition: border-color 0.3s ease;
+}
+
+    fieldset:focus-within {
+        border-color: #007acc;
+        box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.1);
+    }
+
+legend {
+    font-weight: bold;
+    color: #333;
+    padding: 0 10px;
+    font-size: 1.1em;
+}
+
+/* 复选框标签基础样式 */
+label {
+    display: inline-flex;
+    align-items: center;
+    margin: 8px 15px 8px 0;
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+    transition: color 0.3s ease;
+}
+
+    label:hover {
+        color: #007acc;
+    }
+
+    /* 隐藏原生复选框 */
+    label input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+        /* 自定义复选框外观 */
+        label input[type="checkbox"] + span {
+            position: relative;
+            padding-left: 30px;
+            cursor: pointer;
+            line-height: 20px;
+            display: inline-block;
+        }
+
+            /* 复选框框体 */
+            label input[type="checkbox"] + span:before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 20px;
+                height: 20px;
+                border: 2px solid #ccc;
+                border-radius: 4px;
+                background: #fff;
+                transition: all 0.3s ease;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+
+    /* 复选框悬停状态 */
+    label:hover input[type="checkbox"] + span:before {
+        border-color: #007acc;
+        box-shadow: 0 2px 5px rgba(0,122,204,0.2);
+    }
+
+    /* 复选框选中状态 */
+    label input[type="checkbox"]:checked + span:before {
+        background: #007acc;
+        border-color: #007acc;
+    }
+
+    /* 复选框勾选标记 */
+    label input[type="checkbox"]:checked + span:after {
+        content: '';
+        position: absolute;
+        left: 7px;
+        top: 3px;
+        width: 6px;
+        height: 12px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+        animation: checkAnim 0.3s ease;
+    }
+
+/* 自动启动标签特殊样式 */
+.autostart-label {
+    display: flex;
+    align-items: center;
+    margin: 15px 0;
+}
+
+/* 输入框样式 */
+input[type="text"] {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    margin: 8px 0;
+}
+
+    input[type="text"]:hover {
+        border-color: #b0b0b0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    input[type="text"]:focus {
+        outline: none;
+        border-color: #007acc;
+        box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.1);
+        background-color: #fafafa;
+    }
+
+    input[type="text"]::placeholder {
+        color: #999;
+        font-style: italic;
+    }
+
+/* 自定义下拉组件样式 */
+.custom-select {
+    position: relative;
+    max-width: 300px;
+    width: 100%;
+    margin: 8px 0;
+}
+
+.select-selected {
+    padding: 12px 45px 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #333;
+    min-height: 20px;
+}
+
+    .select-selected:hover {
+        border-color: #007acc;
+        background-color: #f8fbff;
+        box-shadow: 0 4px 12px rgba(0, 122, 204, 0.15);
+        transform: translateY(-1px);
+    }
+
+    .select-selected.active {
+        border-color: #007acc;
+        box-shadow: 0 0 0 3px rgba(0, 122, 204, 0.2), 0 4px 12px rgba(0, 122, 204, 0.15);
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+.select-arrow {
+    transition: transform 0.3s ease;
+    font-size: 12px;
+    color: #666;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.select-selected.active .select-arrow {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.select-items {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 2px solid #007acc;
+    border-top: none;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+}
+
+    .select-items.show {
+        display: block;
+    }
+
+.select-option {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    color: #333;
+}
+
+    .select-option:last-child {
+        border-bottom: none;
+    }
+
+    .select-option:hover {
+        background-color: #007acc;
+        color: white;
+    }
+
+    .select-option.selected {
+        background: linear-gradient(135deg, #007acc, #005a9e);
+        color: white;
+        font-weight: 600;
+    }
+
+.option-badge {
+    background: #28a745;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+.select-option:hover .option-badge {
+    background: white;
+    color: #28a745;
+}
+
+/* 隐藏原生select元素 */
+select {
+    display: none;
+}
+
+/* 复制和打印按钮样式 */
+.copy-btn, .print-btn {
+    margin-left: 10px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.copy-btn {
+    background: #28a745;
+    color: white;
+}
+
+    .copy-btn:hover {
+        background: #218838;
+        transform: translateY(-1px);
+    }
+
+.print-btn {
+    background: #17a2b8;
+    color: white;
+}
+
+    .print-btn:hover {
+        background: #138496;
+        transform: translateY(-1px);
+    }
+
+/* 复选框禁用状态 */
+label input[type="checkbox"]:disabled + span {
+    color: #999;
+    cursor: not-allowed;
+}
+
+    label input[type="checkbox"]:disabled + span:before {
+        background: #f5f5f5;
+        border-color: #ddd;
+        box-shadow: none;
+    }
+
+/* 输入框禁用状态 */
+input:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+    border-color: #e0e0e0;
+}
+
+/* 焦点状态 */
+label input[type="checkbox"]:focus + span:before {
+    outline: 2px solid #007acc;
+    outline-offset: 2px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    fieldset {
+        padding: 15px;
+    }
+
+    label {
+        display: flex;
+        margin: 10px 0;
+        width: 100%;
+    }
+
+        label input[type="checkbox"] + span {
+            padding-left: 35px;
+        }
+
+            label input[type="checkbox"] + span:before {
+                width: 24px;
+                height: 24px;
+            }
+
+        label input[type="checkbox"]:checked + span:after {
+            left: 9px;
+            top: 4px;
+            width: 7px;
+            height: 14px;
+        }
+
+    input[type="text"], .custom-select {
+        max-width: 100%;
+    }
+
+    .select-selected {
+        padding: 14px 45px 14px 16px;
+        font-size: 16px;
+    }
+
+    .window {
+        width: 95%;
+        margin: 20px;
+    }
+
+    .content {
+        padding: 20px;
+    }
+}
+
+/* 动画效果 */
+@keyframes checkAnim {
+    0% {
+        transform: scale(0.8) rotate(45deg);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.2) rotate(45deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(45deg);
+        opacity: 1;
+    }
+}
+
+@keyframes selectBounce {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-2px);
+    }
+
+    100% {
+        transform: translateY(-1px);
+    }
+}
+
+.select-selected:hover {
+    animation: selectBounce 0.3s ease;
+}
+
+/* 通知样式 */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    background: #28a745;
+    color: white;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 10000;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.notification-success {
+    background: #28a745;
+}
+
+.notification-error {
+    background: #dc3545;
+}
+
+.notification-info {
+    background: #17a2b8;
+}
+
+/* 表单元素组样式 */
+h1 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+
+h2 {
+    color: #555;
+    margin: 20px 0 10px 0;
+    font-size: 18px;
+}
+
+h3 {
+    margin: 20px 0 10px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+p {
+    margin: 8px 0;
+    color: #666;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 25px 0;
+}
+
+/* 数据库选择标签样式 */
+label[for="custom-db-type"] {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+    cursor: default;
+}
+
+    label[for="custom-db-type"]:hover {
+        color: #333;
+    }
+
+/* 操作按钮容器 */
+.actions {
+    margin: 30px 0;
+    text-align: center;
+}
+
+/* 选中文本样式 */
+.selected-text {
+    flex: 1;
+}
+
+/* 确保所有原有样式都包含 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+}
+
+    /* 确保body在overlay显示时不会滚动 */
+    body.overlay-open {
+        overflow: hidden;
+    }
+/* 在 fs1.css 末尾添加以下样式 */
+
+/* 字段错误样式增强 */
+fieldset.field-error {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.1) !important;
+}
+
+.custom-select.field-error .select-selected {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.1) !important;
+}
+
+/* 按钮禁用状态 */
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
+    button:disabled:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+
+/* 加载状态 */
+.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}

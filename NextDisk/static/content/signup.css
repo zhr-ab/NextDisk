@@ -1,0 +1,250 @@
+﻿/* 输入框容器样式 */
+.input-container {
+    margin: 30px auto;
+    max-width: 500px;
+    padding: 20px;
+    background: #f8f9ff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+    .input-container h1 {
+        text-align: center;
+        color: #4a6cf7;
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    .input-container p {
+        text-align: center;
+        color: #718096;
+        margin-bottom: 30px;
+    }
+
+/* 输入框组样式 */
+.input-group {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+/* 输入框标签样式 */
+.input-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #4a5568;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+/* 输入框样式 */
+.input-field {
+    width: 100%;
+    padding: 16px 20px;
+    font-size: 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background: #ffffff;
+    transition: all 0.3s ease;
+    outline: none;
+    color: #2d3748;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+}
+
+    /* 输入框聚焦状态 */
+    .input-field:focus {
+        border-color: #4a6cf7;
+        box-shadow: 0 5px 15px rgba(74, 108, 247, 0.15);
+    }
+
+    /* 输入框悬停状态 */
+    .input-field:hover {
+        border-color: #a3bffa;
+    }
+
+/* 输入框图标样式 */
+.input-icon {
+    position: absolute;
+    right: 15px;
+    top: 42px;
+    color: #a0aec0;
+    transition: color 0.3s ease;
+}
+
+/* 聚焦时图标颜色变化 */
+.input-field:focus ~ .input-icon {
+    color: #4a6cf7;
+}
+
+/* 提示文本样式 */
+.input-hint {
+    display: block;
+    margin-top: 8px;
+    font-size: 14px;
+    color: #718096;
+    padding-left: 5px;
+}
+
+/* 错误状态样式 */
+.input-group.error .input-field {
+    border-color: #fc8181;
+}
+
+    .input-group.error .input-field:focus {
+        box-shadow: 0 5px 15px rgba(252, 129, 129, 0.15);
+    }
+
+.input-group.error .input-icon {
+    color: #fc8181;
+}
+
+.input-group.error .input-hint {
+    color: #e53e3e;
+}
+
+/* 成功状态样式 */
+.input-group.success .input-field {
+    border-color: #48bb78;
+}
+
+    .input-group.success .input-field:focus {
+        box-shadow: 0 5px 15px rgba(72, 187, 120, 0.15);
+    }
+
+.input-group.success .input-icon {
+    color: #48bb78;
+}
+
+.input-group.success .input-hint {
+    color: #48bb78;
+}
+
+/* 禁用状态样式 */
+.input-field:disabled {
+    background-color: #edf2f7;
+    cursor: not-allowed;
+}
+
+/* 输入框尺寸变化 */
+.input-group.small .input-field {
+    padding: 10px 15px;
+    font-size: 14px;
+}
+
+.input-group.large .input-field {
+    padding: 20px 25px;
+    font-size: 18px;
+}
+
+/* 浮动标签效果 */
+.input-group.floating .input-label {
+    position: absolute;
+    top: 18px;
+    left: 20px;
+    margin-bottom: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    background: white;
+    padding: 0 5px;
+    color: #718096;
+}
+
+.input-group.floating .input-field:focus ~ .input-label,
+.input-group.floating .input-field:not(:placeholder-shown) ~ .input-label,
+.input-group.floating.focused .input-label {
+    top: -10px;
+    font-size: 14px;
+    color: #4a6cf7;
+    background: white;
+}
+
+/* 输入框前缀/后缀 */
+.input-prefix, .input-suffix {
+    display: flex;
+    align-items: center;
+    background: #edf2f7;
+    padding: 0 15px;
+    color: #4a5568;
+    font-weight: 500;
+}
+
+.input-affix {
+    display: flex;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+}
+
+    .input-affix .input-field {
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+        .input-affix .input-field:focus {
+            box-shadow: none;
+        }
+
+    .input-affix:focus-within {
+        border-color: #4a6cf7;
+        box-shadow: 0 5px 15px rgba(74, 108, 247, 0.15);
+    }
+
+/* 示例容器样式 */
+.example-container {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.example-title {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #2d3748;
+    font-size: 20px;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+}
+
+/* 文件上传按钮样式 */
+.custom-file-label {
+    display: inline-block;
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.file-btn {
+    display: inline-block;
+    padding: 8px 20px;
+    background: #4A90E2;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
+    border: none;
+}
+
+    .file-btn:hover {
+        background: #357ABD;
+    }
+
+.upload-btn {
+    background: #4A90E2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-left: 10px;
+}
+
+    .upload-btn:hover {
+        background: #357ABD;
+    }
