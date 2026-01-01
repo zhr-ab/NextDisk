@@ -7,7 +7,6 @@
     <link rel="stylesheet" type="text/css" href="/static/content/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="/static/content/site.css" />
     <link rel="stylesheet" href="/static/content/signup.css">
-    <script src="/static/scripts/signup.js"></script>
     <script src="/static/scripts/modernizr-2.6.2.js"></script>
 </head>
 
@@ -25,8 +24,8 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('home') }}">主页</a></li>
-                    <li><a href="{{ url_for('about') }}">关于</a></li>
-                    <li><a href="{{ url_for('contact') }}">联系</a></li>
+                    <li><a href="{{ url_for('files') }}">文件</a></li>
+                    <li><a href="{{ url_for('settings') }}">设置</a></li>
                 </ul>
             </div>
         </div>

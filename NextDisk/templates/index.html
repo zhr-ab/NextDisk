@@ -1,32 +1,28 @@
-{% extends "layout.html" %}
+﻿{% extends "layout.html" %}
 
 {% block content %}
 
 <div class="jumbotron">
-    <h1>Flask</h1>
-    <p class="lead">Flask is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://flask.pocoo.org/" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+    <h1>文件管理器</h1>
+    <p class="lead">如果您看到此界面证明文件管理器已经顺利部署到您的计算机（服务器）中了，您可以注册一个账户。</p>
+    <p><a href="/signup/administrator" class="btn btn-primary btn-large">注册第一个用户 &raquo;</a></p>
 </div>
 
 <div class="row">
     <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            Flask gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://flask.pocoo.org/docs/">Learn more &raquo;</a></p>
+        <h2>已有账号？</h2>
+        <p>如果之前已经注册过账户却没有正确跳转，请点击登录按钮手动跳转到登录页面。</p>
+        <p><a class="btn btn-default" href="/login">登录 &raquo;</a></p>
     </div>
     <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>The Python Package Index is a repository of software for the Python programming language.</p>
-        <p><a class="btn btn-default" href="https://pypi.python.org/pypi">Learn more &raquo;</a></p>
+        <h2>远程访问</h2>
+        <p>通过文件管理器自研虚拟组网/内网穿透或第三方工具实现远程访问您的服务器。</p>
+        <p><a class="btn btn-default" href="/penetration">立即配置 &raquo;</a></p>
     </div>
     <div class="col-md-4">
-        <h2>Microsoft Azure</h2>
-        <p>You can easily publish to Microsoft Azure using Visual Studio. Find out how you can host your application using a free trial today.</p>
-        <p><a class="btn btn-default" href="http://azure.microsoft.com">Learn more &raquo;</a></p>
+        <h2>GitHub</h2>
+        <p>文件管理器是一个开源项目，点击跳转到GitHub项目主页。</p>
+        <p><a class="btn btn-default" href="http://azure.microsoft.com">项目主页 &raquo;</a></p>
     </div>
 </div>
 

@@ -1,0 +1,27 @@
+﻿{% extends "layout_in.html" %}
+
+{% block content %}
+
+<h1>NextDisk文件管理</h1>
+<p>欢迎使用NextDisk文件管理系统。在这里，您可以上传、下载和管理您的文件。</p>
+<ul>
+    {% for file, size in zip(filelist, sizelist) %}
+    <li>
+        {{ file }} ({{ size }})
+        <a href="{{ url_for('download_file', filename=file) }}">下载</a>
+        <a href="{{ url_for('delete_file', filename=file) }}">删除</a>
+    </li>
+    {% endfor %}
+</ul>
+<hr />
+<form id="registerForm" action="/upload" method="POST" enctype="multipart/form-data">
+    <label class="custom-file-label">
+        <input type="file" name="file" class="input-field" style="display:none;" onchange="this.nextElementSibling.innerText=this.files[0]?.name||'选择文件'">
+        <span class="file-btn">选择文件</span>
+    </label>
+    <input type="submit" value="上传" class="upload-btn">
+</form>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='content/files.css') }}">
+
+{% endblock %}

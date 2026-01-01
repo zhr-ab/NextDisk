@@ -1,0 +1,218 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>登录</title>
+    <style>
+        :root {
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --accent: #4a90e2;
+            --muted: #6b7280;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: linear-gradient(135deg,#eef2ff 0%,var(--bg) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            color: #111827;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(17,24,39,0.08);
+            padding: 28px;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: 20px
+        }
+
+        p.hint {
+            margin: 0 0 20px;
+            color: var(--muted);
+            font-size: 14px
+        }
+
+        form .field {
+            margin-bottom: 14px
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px
+        }
+
+        input[type="text"], input[type="password"], input[type="email"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e6e9ef;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fbfdff;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .checkbox {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            font-size: 14px;
+            color: var(--muted)
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+            .btn:active {
+                transform: translateY(1px)
+            }
+
+        .small {
+            font-size: 13px;
+            color: var(--muted);
+            text-align: center;
+            margin-top: 14px
+        }
+
+        .toggle-pass {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 13px
+        }
+
+        .error {
+            background: #fff1f0;
+            color: #9b1c1c;
+            padding: 10px;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            margin-bottom: 14px
+        }
+
+        @media (max-width:420px) {
+            .card {
+                padding: 20px
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="card" role="main">
+        <h1>登录到 NextDisk</h1>
+        <p class="hint">请输入你的用户名和密码以继续。</p>
+
+        {%- if error %}
+        <div class="error" role="alert" aria-live="assertive">{{ error }}</div>
+        {%- endif %}
+
+        <!-- 使用 GET 作为回退：如果浏览器禁用 JS，表单也会以查询参数提交 -->
+        <form action="/login" method="get" id="loginForm" autocomplete="on">
+            <div class="field">
+                <label for="username">用户名或邮箱</label>
+                <input id="username" name="username" type="text" required placeholder="用户名或邮箱" value="{{ username|default('') }}" />
+            </div>
+
+            <div class="field">
+                <label for="password">密码</label>
+                <div style="display:flex;gap:8px">
+                    <input id="password" name="password" type="password" required placeholder="密码" style="flex:1" />
+                    <button type="button" class="toggle-pass" id="togglePass" aria-label="显示密码">显示</button>
+                </div>
+            </div>
+
+            <div class="field row">
+                <label class="checkbox">
+                    <input type="checkbox" name="remember" /> 记住我
+                </label>
+                <a href="/forgot" style="color:var(--accent);font-size:13px;text-decoration:none">忘记密码？</a>
+            </div>
+
+            <div class="field">
+                <button class="btn" type="submit">登录</button>
+            </div>
+
+            <div class="small">还没有账号？ <a href="/signup/user" style="color:var(--accent);text-decoration:none">注册</a></div>
+        </form>
+    </main>
+
+    <script>
+    // 简单交互：显示/隐藏密码。拦截提交并通过 URL 参数传输（主要行为）。
+    (function(){
+      var toggle = document.getElementById('togglePass');
+      var pwd = document.getElementById('password');
+      toggle.addEventListener('click', function(){
+        if(pwd.type === 'password'){
+          pwd.type = 'text';
+          toggle.textContent = '隐藏';
+          toggle.setAttribute('aria-label','隐藏密码');
+        } else {
+          pwd.type = 'password';
+          toggle.textContent = '显示';
+          toggle.setAttribute('aria-label','显示密码');
+        }
+      });
+
+      var form = document.getElementById('loginForm');
+      form.addEventListener('submit', function(e){
+        // 优先使用 JS 构建 URL 并重定向到 /login?username=...&password=...&remember=...
+        // 这样后端可以直接从查询参数中读取变量
+        e.preventDefault();
+        if(!form.checkValidity()){
+          // 原生提示
+          form.reportValidity();
+          return;
+        }
+
+        var username = document.getElementById('username').value || '';
+        var password = document.getElementById('password').value || '';
+        var rememberEl = form.querySelector('input[name="remember"]');
+        var remember = rememberEl && rememberEl.checked ? '1' : '';
+
+        var params = [];
+        params.push('username=' + encodeURIComponent(username));
+        params.push('password=' + encodeURIComponent(password));
+        if(remember) params.push('remember=' + encodeURIComponent(remember));
+
+        var url = '/login?' + params.join('&');
+        // 使用 location.assign 进行导航
+        window.location.assign(url);
+      });
+
+      // 将焦点放在用户名输入框，便于快速登录
+      var userInput = document.getElementById('username');
+      if(userInput){ userInput.focus(); userInput.select(); }
+    })();
+    </script>
+</body>
+</html>
