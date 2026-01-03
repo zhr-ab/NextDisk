@@ -110,3 +110,12 @@ def update_cookie(user_id, cookie_value):
     with connection_context() as conn:
         conn.execute("UPDATE users SET cookie = ? WHERE id = ?", (cookie_value, user_id))
         conn.commit()
+
+#验证用户名和密码
+def authenticate_user(username, password):
+    with connection_context() as conn:
+        cur = conn.cursor()
+        cur.execute("SELECT * FROM users WHERE name = ? AND password = ?", (username, password))
+        user = cur.fetchone()
+        cur.close()
+        return user is not None

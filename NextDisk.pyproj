@@ -59,6 +59,7 @@
     <Content Include="NextDisk\templates\Final_setting.html" />
     <Content Include="NextDisk\templates\layout_in.html" />
     <Content Include="NextDisk\templates\login.html" />
+    <Content Include="NextDisk\templates\loginerror.html" />
     <Content Include="NextDisk\templates\registered_successfully.html" />
     <Content Include="NextDisk\templates\settings.html" />
     <Content Include="NextDisk\templates\signup_administrator.html" />

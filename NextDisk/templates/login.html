@@ -136,8 +136,8 @@
         <div class="error" role="alert" aria-live="assertive">{{ error }}</div>
         {%- endif %}
 
-        <!-- 使用 GET 作为回退：如果浏览器禁用 JS，表单也会以查询参数提交 -->
-        <form action="/login" method="get" id="loginForm" autocomplete="on">
+        <!-- 使用 POST 方法提交表单，密码不会显示在 URL 中 -->
+        <form action="/login" method="post" id="loginForm" autocomplete="on">
             <div class="field">
                 <label for="username">用户名或邮箱</label>
                 <input id="username" name="username" type="text" required placeholder="用户名或邮箱" value="{{ username|default('') }}" />
@@ -167,52 +167,42 @@
     </main>
 
     <script>
-    // 简单交互：显示/隐藏密码。拦截提交并通过 URL 参数传输（主要行为）。
-    (function(){
-      var toggle = document.getElementById('togglePass');
-      var pwd = document.getElementById('password');
-      toggle.addEventListener('click', function(){
-        if(pwd.type === 'password'){
-          pwd.type = 'text';
-          toggle.textContent = '隐藏';
-          toggle.setAttribute('aria-label','隐藏密码');
-        } else {
-          pwd.type = 'password';
-          toggle.textContent = '显示';
-          toggle.setAttribute('aria-label','显示密码');
-        }
-      });
+        // 简单交互：显示/隐藏密码
+        (function () {
+            var toggle = document.getElementById('togglePass');
+            var pwd = document.getElementById('password');
+            toggle.addEventListener('click', function () {
+                if (pwd.type === 'password') {
+                    pwd.type = 'text';
+                    toggle.textContent = '隐藏';
+                    toggle.setAttribute('aria-label', '隐藏密码');
+                } else {
+                    pwd.type = 'password';
+                    toggle.textContent = '显示';
+                    toggle.setAttribute('aria-label', '显示密码');
+                }
+            });
 
-      var form = document.getElementById('loginForm');
-      form.addEventListener('submit', function(e){
-        // 优先使用 JS 构建 URL 并重定向到 /login?username=...&password=...&remember=...
-        // 这样后端可以直接从查询参数中读取变量
-        e.preventDefault();
-        if(!form.checkValidity()){
-          // 原生提示
-          form.reportValidity();
-          return;
-        }
+            // 表单验证（可选，浏览器会自动验证 required 字段）
+            var form = document.getElementById('loginForm');
+            form.addEventListener('submit', function (e) {
+                // 如果表单无效，阻止提交
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    form.reportValidity();
+                    return;
+                }
+                // 表单有效，浏览器会自动以 POST 方式提交
+                // 密码不会出现在 URL 中，更加安全
+            });
 
-        var username = document.getElementById('username').value || '';
-        var password = document.getElementById('password').value || '';
-        var rememberEl = form.querySelector('input[name="remember"]');
-        var remember = rememberEl && rememberEl.checked ? '1' : '';
-
-        var params = [];
-        params.push('username=' + encodeURIComponent(username));
-        params.push('password=' + encodeURIComponent(password));
-        if(remember) params.push('remember=' + encodeURIComponent(remember));
-
-        var url = '/login?' + params.join('&');
-        // 使用 location.assign 进行导航
-        window.location.assign(url);
-      });
-
-      // 将焦点放在用户名输入框，便于快速登录
-      var userInput = document.getElementById('username');
-      if(userInput){ userInput.focus(); userInput.select(); }
-    })();
+            // 将焦点放在用户名输入框，便于快速登录
+            var userInput = document.getElementById('username');
+            if (userInput) {
+                userInput.focus();
+                userInput.select();
+            }
+        })();
     </script>
 </body>
 </html>

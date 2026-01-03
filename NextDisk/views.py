@@ -7,14 +7,14 @@ from flask import render_template, request, make_response, jsonify, redirect, ur
 from NextDisk.diskmanger import get_disk_info
 import flask
 from NextDisk import app
-from NextDisk.sql import insert, searchall, search, clear_all_drop_schema, get_setting, insert_setting, update_cookie
+from NextDisk.sql import insert, searchall, search, clear_all_drop_schema, get_setting, insert_setting, update_cookie, authenticate_user
 from NextDisk.encryption import generate_symmetric_key, symmetric_encrypt, symmetric_decrypt
 from NextDisk.filesmanger import filesmanger
 from NextDisk.autostart import set_autostart
 import os
 import time
 import requests
-import random
+import secrets
 
 username,password,remember,userdata='','',0,()
 
@@ -130,12 +130,12 @@ def signup_superuser():
 @app.route('/signup/user')
 def signup_user():
     pass
-@app.route('/login', methods=['GET'])
+@app.route('/login', methods=['GET','POST'])
 def login():
     global username,password,remember,userdata
-    username = request.args.get('username', '').strip()
+    username = request.form.get('username', '').strip()
     if username=='':
-        cookie_v = request.cookies.get('cookie')
+        cookie_v = request.cookies.get('usercookie')
         if not cookie_v:
             return render_template('login.html', title='登录')
         else:
@@ -149,10 +149,13 @@ def login():
                 username=userdata[1]
                 password=userdata[2]
                 return redirect(url_for(desktop))
-    password = request.args.get('password', '').strip()
-    remember = bool(request.args.get('remember', '').strip())
+    password = request.form.get('password', '').strip()
+    remember = bool(request.form.get('remember', '').strip())
+    user = authenticate_user(username, password)
+    if not user:
+        return render_template('loginerror.html', title='登录错误')
     if remember:
-        cookie_value = str(random.randint(100000, 999999))
+        cookie_value = secrets.token_hex(32)
         resp = make_response(redirect(url_for('desktop')))
         resp.set_cookie('usercookie',cookie_value , max_age=180*24*60*60)  # 180天
         update_cookie(username,cookie_value)
@@ -168,6 +171,7 @@ def register():
      age = request.form.get('age', '').strip()
      file = request.files.get('file')
      memory = request.form.get('memory', '').strip()
+     user_type=request.form.get('user_type', '').strip()
 
      os.makedirs("images", exist_ok=True)
      # 如果没有上传文件或文件名为空，保存默认图标
@@ -177,7 +181,7 @@ def register():
          with open("status.txt", "w") as f:
              f.write(f"registered_successfully,{time.time()}")
          if memory == "memory":
-             cookie_value = str(random.randint(100000, 999999))
+             cookie_value = secrets.token_hex(32)
              resp = make_response(render_template('registered_successfully.html'))
              resp.set_cookie('usercookie',cookie_value , max_age=180*24*60*60)  # 180天
              insert(username,password,email,phone,age,cookie_value)
@@ -195,7 +199,7 @@ def register():
          # 记录已注册并保存时间戳
          with open("status.txt", "w") as f:
              f.write(f"registered_successfully,{time.time()}")
-         cookie_value = str(random.randint(100000, 999999))
+         cookie_value = secrets.token_hex(32)
          if memory == "memory":
              resp = make_response(render_template('registered_successfully.html'))
              resp.set_cookie('usercookie',cookie_value , max_age=180*24*60*60)  # 180天
@@ -205,7 +209,7 @@ def register():
          insert(username,password,email,phone,age,cookie_value)
          return resp
      else:
-         return render_template('error.html',user='administrator')
+         return render_template('error.html',user=user_type)
 
 @app.route('/submit',methods=["POST"])
 def submit():
