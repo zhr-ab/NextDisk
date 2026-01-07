@@ -42,6 +42,11 @@ def index():
      """Renders the index page."""
      return redirect(url_for('home'))
 
+#处理favicon.ico请求，重定向到PNG图标
+@app.route('/favicon.ico')
+def favicon():
+    return redirect(url_for('static', filename='content/icon.png'))
+
 @app.route('/home')
 def home():
      """Renders the home page."""
@@ -140,12 +145,11 @@ def login():
             return render_template('login.html', title='登录')
         else:
             try:
-                search('cookie','=',cookie_v)
+                userdata=search('cookie','=',cookie_v)[0]
             except Exception:
                 return render_template('login.html', title='登录')
             else:
                 #userdata=(id, name, password, email, phone, age, cookie)
-                userdata=search('cookie','=',cookie_v)[0]
                 username=userdata[1]
                 password=userdata[2]
                 return redirect(url_for(desktop))
