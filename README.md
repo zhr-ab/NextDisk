@@ -1,4 +1,6 @@
 # NextDisk
+<img width="418" height="418" alt="IMG_202601055583_418x418" src="https://github.com/user-attachments/assets/2430d725-3dc6-4908-b245-e60880707f55" />
+
 基于Python的私有云管理程序，适用于所有可以正常安装Python的平台（Windows、MacOS、Linux甚至Android），目前已实现基础功能（上传、下载、删除文件）。
 
 # 安装Python
@@ -45,8 +47,11 @@ serverhost=0.0.0.0 serverport=80 python runserver.py
 # 开始使用NextDisk
 点击注册一个用户，输入相关信息，点击注册。在最终设置中选择是否开机自启动，点击完成，在密钥框点击确定（不需要保存密钥，因为此功能尚未完成）。
 
-刷新页面，在登录页面中输入用户名和密码（此功能尚未完成，可随意输入），点击登录，即可查看您的文件。
+刷新页面，在登录页面中输入用户名和密码，点击登录，即可查看您的文件。
 
 此时，您可以上传、下载和管理您的文件。可以使用 https://github.com/user-attachments/files/24407643/test.txt 测试所有功能是否正常（上传、下载再删除）。
 
 下载完成后打开test.txt，当看到"您的NextDisk已经顺利部署并可以正常使用了！"时，代表您的NextDisk功能完全正常！
+
+# 说明
+如果您在使用NextDisk时遇到了问题，请通过创建Issues或Discussions的方式反馈给开发者，您的支持将是我们创造下去的最大动力！
