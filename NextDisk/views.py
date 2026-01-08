@@ -3,7 +3,7 @@ Routes and views for the flask application.
 """
 
 from datetime import datetime
-from flask import render_template, request, make_response, jsonify, redirect, url_for, send_from_directory, abort
+from flask import render_template, request, make_response, jsonify, redirect, url_for, send_from_directory, abort, g, session
 from NextDisk.diskmanger import get_disk_info
 import flask
 from NextDisk import app
@@ -15,8 +15,6 @@ import os
 import time
 import requests
 import secrets
-
-username,password,remember,userdata='','',0,()
 
 def download_image(url, save_path):
     response = requests.get(url)
@@ -34,6 +32,24 @@ ALLOWED_EXTENSIONS = {'ico', 'png', 'jpg', 'jpeg', 'bmp', 'tif', 'tiff', 'svg', 
 def allowed_file(filename):
      """检查文件名是否包含允许的扩展名"""
      return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS
+
+def check_auth():
+    """检查用户是否已登录"""
+    if 'username' not in session:
+        # 检查cookie
+        cookie_v = request.cookies.get('usercookie')
+        if cookie_v:
+            try:
+                userdata = search('cookie','=',cookie_v)[0]
+                session['username'] = userdata[1]
+                session['userdata'] = userdata
+                g.username = userdata[1]
+                g.userdata = userdata
+                return True
+            except Exception:
+                return False
+        return False
+    return True
 
 
 @app.route('/')
@@ -85,7 +101,9 @@ def home():
 @app.route('/desktop')
 def desktop():
      """Renders the desktop page."""
+     check_auth()  # 检查登录状态
      disk_info = get_disk_info()
+     username = session.get('username') or getattr(g, 'username', None)
      return render_template(
          'desktop.html',
          title='桌面',
@@ -137,7 +155,6 @@ def signup_user():
     pass
 @app.route('/login', methods=['GET','POST'])
 def login():
-    global username,password,remember,userdata
     username = request.form.get('username', '').strip()
     if username=='':
         cookie_v = request.cookies.get('usercookie')
@@ -150,14 +167,27 @@ def login():
                 return render_template('login.html', title='登录')
             else:
                 #userdata=(id, name, password, email, phone, age, cookie)
-                username=userdata[1]
-                password=userdata[2]
-                return redirect(url_for(desktop))
+                g.username = userdata[1]
+                g.password = userdata[2]
+                g.userdata = userdata
+                # 使用session保存用户信息，跨请求保持
+                session['username'] = userdata[1]
+                session['userdata'] = userdata
+                return redirect(url_for('desktop'))
     password = request.form.get('password', '').strip()
     remember = bool(request.form.get('remember', '').strip())
     user = authenticate_user(username, password)
     if not user:
         return render_template('loginerror.html', title='登录错误')
+    g.username = username
+    g.password = password
+    g.remember = remember
+    # 获取用户完整数据
+    userdata = search('name','=',username)[0] if search('name','=',username) else None
+    # 使用session保存用户信息
+    session['username'] = username
+    if userdata:
+        session['userdata'] = userdata
     if remember:
         cookie_value = secrets.token_hex(32)
         resp = make_response(redirect(url_for('desktop')))
@@ -184,14 +214,15 @@ def register():
          # 记录已注册并保存时间戳
          with open("status.txt", "w") as f:
              f.write(f"registered_successfully,{time.time()}")
+         # 始终生成cookie，确保自动登录功能可用
+         cookie_value = secrets.token_hex(32)
          if memory == "memory":
-             cookie_value = secrets.token_hex(32)
              resp = make_response(render_template('registered_successfully.html'))
-             resp.set_cookie('usercookie',cookie_value , max_age=180*24*60*60)  # 180天
-             insert(username,password,email,phone,age,cookie_value)
+             resp.set_cookie('usercookie',cookie_value , max_age=180*24*60*60)  # 180天持久化cookie
          else:
              resp = make_response(render_template('registered_successfully.html'))
-             insert(username,password,email,phone,age,None)
+             resp.set_cookie('usercookie',cookie_value) # 会话cookie，浏览器关闭后失效，但数据库中仍有记录
+         insert(username,password,email,phone,age,cookie_value)
          return resp
 
      # 验证文件扩展名
@@ -199,7 +230,6 @@ def register():
          filename = os.path.basename(file.filename)
          dest = os.path.join("images", filename)
          file.save(dest)
-         insert(username,password,email,phone,age)
          # 记录已注册并保存时间戳
          with open("status.txt", "w") as f:
              f.write(f"registered_successfully,{time.time()}")
@@ -230,6 +260,8 @@ def submit():
 @app.route('/files')
 def files():
     """Renders the files page."""
+    check_auth()  # 检查登录状态
+    username = session.get('username') or getattr(g, 'username', None)
     return render_template(
         'files.html',
         title='文件管理',
@@ -245,6 +277,8 @@ def files():
 @app.route('/settings')
 def settings():
         """Renders the settings page."""
+        check_auth()  # 检查登录状态
+        username = session.get('username') or getattr(g, 'username', None)
         return render_template(
             'settings.html',
             title='设置',

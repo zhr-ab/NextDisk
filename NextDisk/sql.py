@@ -105,10 +105,10 @@ def clear_all_drop_schema():
         cur.close()
 
 
-def update_cookie(user_id, cookie_value):
+def update_cookie(username, cookie_value):
     """更新指定用户的 cookie 值。"""
     with connection_context() as conn:
-        conn.execute("UPDATE users SET cookie = ? WHERE id = ?", (cookie_value, user_id))
+        conn.execute("UPDATE users SET cookie = ? WHERE name = ?", (cookie_value, username))
         conn.commit()
 
 #验证用户名和密码
