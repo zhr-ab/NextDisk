@@ -5,12 +5,14 @@
 <h1>NextDisk文件管理</h1>
 <p>欢迎使用NextDisk文件管理系统。在这里，您可以上传、下载和管理您的文件。</p>
 <ul>
-    {% for file, size in zip(filelist, sizelist) %}
+    {% for file, size, note in zip(filelist, sizelist, notelist) %}
+    {% if file != 'edit_log.log' %}  <!-- 将条件移到li外面 -->
     <li>
-        {{ file }} ({{ size }})
+        {{ file }} ({{ size }}) - {{ note }}
         <a href="{{ url_for('download_file', filename=file) }}">下载</a>
         <a href="{{ url_for('delete_file', filename=file) }}">删除</a>
     </li>
+    {% endif %}
     {% endfor %}
 </ul>
 <hr />

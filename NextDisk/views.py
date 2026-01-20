@@ -262,13 +262,26 @@ def files():
     """Renders the files page."""
     check_auth()  # 检查登录状态
     username = session.get('username') or getattr(g, 'username', None)
+    
+    # 获取文件列表
+    raw_files = filesmanger.listfiles()
+    
+    # 分离文件名和备注
+    filelist = []
+    notelist = []
+    for item in raw_files:
+        filename, note = filesmanger.split_file_note(item)
+        filelist.append(filename)
+        notelist.append(note)
+    
     return render_template(
         'files.html',
         title='文件管理',
         year=datetime.now().year,
         message='NextDisk 文件管理器',
         username=username,
-        filelist=filesmanger.listfiles(),
+        filelist=filelist,
+        notelist=notelist,
         sizelist=filesmanger.listsize(),
         zip=zip
     )
@@ -296,7 +309,7 @@ def download_file(filename):
     except FileNotFoundError:
         abort(404)
 
-#上传文件
+# 上传文件
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
@@ -304,10 +317,32 @@ def upload_file():
     file = request.files['file']
     if file.filename == '':
         return redirect(url_for('files'))
+    
     if file:
         storage_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'storage'))
         os.makedirs(storage_dir, exist_ok=True)
-        file.save(os.path.join(storage_dir, file.filename))
+        # 获取原始文件名
+        original_filename = file.filename
+        filepath = os.path.join(storage_dir, original_filename)
+        # 检查文件是否存在
+        if os.path.exists(filepath):
+            # 如果文件已存在，在文件名后添加时间戳
+            name, ext = os.path.splitext(original_filename)
+            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            new_filename = f"{name} NOTE {timestamp}{ext}"
+            new_filepath = os.path.join(storage_dir, new_filename)
+            # 重命名旧文件
+            os.rename(filepath, new_filepath)
+            # 保存新文件，但使用原始文件名
+            # 这样用户下载时得到的是最新版本
+            file.save(filepath)
+            # 记录修改日志
+            with open(os.path.join(storage_dir, "edit_log.log"), "a") as log_file:
+                log_file.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}: {original_filename} -> {new_filename}\n")
+        else:
+            # 如果文件不存在，直接保存
+            file.save(filepath)
+    
     return redirect(url_for('files'))
 
 #删除文件
@@ -317,4 +352,6 @@ def delete_file(filename):
     file_path = os.path.join(storage_dir, filename)
     if os.path.exists(file_path):
         os.remove(file_path)
+        with open("edit_log.log", "a") as log_file:
+            log_file.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}: Deleted {filename}\n")
     return redirect(url_for('files'))

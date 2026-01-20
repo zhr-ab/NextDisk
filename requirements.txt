@@ -1,4 +1,4 @@
-﻿Flask>=2.2.3
+Flask>=2.2.3
 requests>=2.28.0
 cryptography>=39.0.1
 psutil>=7.1.3

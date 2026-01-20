@@ -1,4 +1,4 @@
-﻿import os
+import os
 import sqlite3
 import contextlib
 
@@ -54,7 +54,7 @@ def insert(name,password,email,phone,age,cookie):
         conn.execute("INSERT INTO users (name,password,email,phone,age,cookie) VALUES (?,?,?,?,?,?)",(name,password,email,phone,age,cookie))
         conn.commit()
 
-
+20
 def searchall():
     # 返回 users 表中所有行
     with connection_context() as conn:

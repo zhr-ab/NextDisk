@@ -1,4 +1,6 @@
 ﻿import os
+import hashlib
+from werkzeug.utils import secure_filename
 
 def format_size(size_bytes):
     if size_bytes < 1024:
@@ -69,6 +71,44 @@ class filesmanger():
             return sizes
         except Exception as e:
             return str(e)
+
+    def check_file(uploaded_file, upload_dir='.'):
+        """
+        简化版本：只检查是否存在哈希冲突
+    
+        参数:
+        uploaded_file: Flask的FileStorage对象
+        upload_dir: 上传目录
+    
+        返回:
+        bool: 是否存在冲突
+        """
+        if not uploaded_file or uploaded_file.filename == '':
+            return False
+    
+        filename = secure_filename(uploaded_file.filename)
+        file_path = os.path.join(upload_dir, filename)
+    
+        # 如果文件不存在，直接返回False
+        if not os.path.exists(file_path):
+            return False
+    
+        # 计算上传文件的哈希
+        uploaded_file.seek(0)
+        new_hash = hashlib.md5(uploaded_file.read()).hexdigest()
+        uploaded_file.seek(0)  # 重置文件指针
+    
+        # 计算现有文件的哈希
+        with open(file_path, 'rb') as f:
+            existing_hash = hashlib.md5(f.read()).hexdigest()
+    
+        # 返回比较结果
+        return existing_hash != new_hash
+    
+    @staticmethod
+    def split_file_note(item):
+        """按最后一个NOTE:分割,返回(文件名, 备注)"""
+        return item.rsplit(" NOTE ", 1) if " NOTE " in item else (item, "")
 
 
 
