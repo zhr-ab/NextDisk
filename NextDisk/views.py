@@ -155,46 +155,50 @@ def signup_user():
     pass
 @app.route('/login', methods=['GET','POST'])
 def login():
-    username = request.form.get('username', '').strip()
-    if username=='':
+    if request.method == 'GET':
+        # GET请求直接显示登录页面
         cookie_v = request.cookies.get('usercookie')
-        if not cookie_v:
-            return render_template('login.html', title='登录')
-        else:
+        if cookie_v:
             try:
-                userdata=search('cookie','=',cookie_v)[0]
-            except Exception:
-                return render_template('login.html', title='登录')
-            else:
-                #userdata=(id, name, password, email, phone, age, cookie)
-                g.username = userdata[1]
-                g.password = userdata[2]
-                g.userdata = userdata
-                # 使用session保存用户信息，跨请求保持
+                userdata = search('cookie', '=', cookie_v)[0]
                 session['username'] = userdata[1]
                 session['userdata'] = userdata
+                g.username = userdata[1]
+                g.userdata = userdata
                 return redirect(url_for('desktop'))
+            except Exception:
+                # cookie无效，清除cookie并显示登录页面
+                resp = make_response(render_template('login.html', title='登录'))
+                resp.delete_cookie('usercookie')
+                return resp
+        return render_template('login.html', title='登录')
+    
+    # POST请求处理登录逻辑
+    username = request.form.get('username', '').strip()
     password = request.form.get('password', '').strip()
     remember = bool(request.form.get('remember', '').strip())
+    
+    if not username or not password:
+        return render_template('login.html', title='登录', error='用户名和密码不能为空')
+    
     user = authenticate_user(username, password)
     if not user:
         return render_template('loginerror.html', title='登录错误')
-    g.username = username
-    g.password = password
-    g.remember = remember
-    # 获取用户完整数据
-    userdata = search('name','=',username)[0] if search('name','=',username) else None
-    # 使用session保存用户信息
+    
+    # 登录成功后的处理
     session['username'] = username
+    userdata = search('name', '=', username)[0] if search('name', '=', username) else None
     if userdata:
         session['userdata'] = userdata
+    
+    response = make_response(redirect(url_for('desktop')))
+    
     if remember:
         cookie_value = secrets.token_hex(32)
-        resp = make_response(redirect(url_for('desktop')))
-        resp.set_cookie('usercookie',cookie_value , max_age=180*24*60*60)  # 180天
-        update_cookie(username,cookie_value)
-        return resp
-    return redirect(url_for('desktop'))
+        response.set_cookie('usercookie', cookie_value, max_age=180 * 24 * 60 * 60)
+        update_cookie(username, cookie_value)
+    
+    return response
 
 @app.route('/register', methods=["POST"])
 def register():
