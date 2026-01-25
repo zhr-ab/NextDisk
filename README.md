@@ -27,21 +27,21 @@ pip install -r requirements.txt
 
 建议您通过以下命令运行runserver.py以监听所有地址（0.0.0.0）：
 ```
-serverhost=0.0.0.0 python runserver.py
+SERVER_HOST=0.0.0.0 python runserver.py
 ```
 或者您想自定义端口为8080：
 ```
-serverhost=0.0.0.0 serverport=8080 python runserver.py
+SERVER_HOST=0.0.0.0 SERVER_PORT=8080 python runserver.py
 ```
 再或者您只想通过 http://nextdisk.com:8080/ 访问：
 ```
-serverhost=nextdisk.com serverport=8080 python runserver.py
+SERVER_HOST=nextdisk.com SERVER_PORT=8080 python runserver.py
 ```
 其他情况以此类推。需要注意的是，浏览器默认会访问服务器的80端口，如果不在URL中指定端口号（如`:8080`），则默认使用80端口。
 
 如果您想直接通过域名或IP（不加端口）访问NextDisk页面，请使用：
 ```
-serverhost=0.0.0.0 serverport=80 python runserver.py
+SERVER_HOST=0.0.0.0 SERVER_PORT=80 python runserver.py
 ```
 
 # 开始使用NextDisk
