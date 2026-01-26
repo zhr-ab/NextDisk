@@ -59,7 +59,7 @@ pip install -r requirements.txt
 ```
 
 # 设定端口和域名
-如果没有设定“serverport”或“serverhost”，则默认只可在服务器中使用 http://127.0.0.1:5555/ 访问。
+如果没有设定“SERVER_PORT”或“SERVER_HOST”，则默认只可在服务器中使用 http://127.0.0.1:5555/ 访问。
 
 建议您通过以下命令运行runserver.py以监听所有地址（0.0.0.0）：
 ```
