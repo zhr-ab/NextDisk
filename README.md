@@ -53,7 +53,7 @@ pip install pip
 ```
 git clone https://github.com/zhr-ab/NextDisk.git
 ```
-或直接下载发布的[zip包](https://github.com/zhr-ab/NextDisk/releases/download/stable/NextDisk_stable_v1.0.0.zip)（仅项目文件，最小化）并解压，然后运行其中的runserver.py文件。运行前请执行以下命令安装依赖：
+或直接下载发布的[zip包](https://github.com/zhr-ab/NextDisk/releases/download/v1.0.5_H.J.T.J_Fix/NextDisk_v1.0.5_H.J.T.J_Fix.zip)（仅项目文件，最小化）并解压，然后运行其中的runserver.py文件。运行前请执行以下命令安装依赖：
 ```
 pip install -r requirements.txt
 ```
