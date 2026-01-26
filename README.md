@@ -12,6 +12,42 @@ apt install python3
 ```
 其他Linux发行版安装方式类似。
 
+# 创建虚拟环境
+
+我们建议您在一个虚拟python环境中运行NextDisk，您可以通过以下方式创建：
+如果您在使用Debian系Linux操作系统可能需要通过执行以下命令安装venv：
+```
+sudo apt install python3-venv
+```
+CentOS/RHEL系统则需要：
+```
+sudo yum install python3-venv
+```
+或
+```
+sudo dnf install python3-venv
+```
+Windows下默认会自动安装venv。
+
+接着便可以创建虚拟环境了：
+```
+python -m venv env
+```
+激活虚拟环境时需要在windows的cmd中执行
+```
+env\Scripts\activate
+```
+或在其他系统中执行
+```
+source myenv/bin/activate
+```
+最后当bash显示(env)xxx时代表已经成功激活虚拟环境了。
+
+如果你还没有安装pip请执行：
+```
+pip install pip
+```
+或在windows的python安装程序中勾选pip。
 # 安装和运行
 直接克隆此仓库的master分支：
 ```
