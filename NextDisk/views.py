@@ -183,7 +183,7 @@ def login():
     
     user = authenticate_user(username, password)
     if not user:
-        return render_template('loginerror.html', title='登录错误')
+        return render_template('error.html', title='用户名或密码错误', message='您输入了错误的用户名或密码，请点击下方按钮重试。', back_text='重试')
     
     # 登录成功后的处理
     session['username'] = username
@@ -209,7 +209,6 @@ def register():
      age = request.form.get('age', '').strip()
      file = request.files.get('file')
      memory = request.form.get('memory', '').strip()
-     user_type=request.form.get('user_type', '').strip()
 
      os.makedirs("images", exist_ok=True)
      # 如果没有上传文件或文件名为空，保存默认图标
@@ -247,7 +246,7 @@ def register():
          insert(username,password,email,phone,age,cookie_value)
          return resp
      else:
-         return render_template('error.html',user=user_type)
+         return render_template('error.html',title='文件扩展名无效', message='您上传的文件扩展名错误，请点击下面按钮返回登录。', back_text='返回登录')
 
 @app.route('/submit',methods=["POST"])
 def submit():

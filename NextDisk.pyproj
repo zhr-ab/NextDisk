@@ -54,12 +54,11 @@
     <Content Include="NextDisk\static\scripts\Final_setting.js" />
     <Content Include="NextDisk\static\scripts\signup.js" />
     <Content Include="NextDisk\templates\desktop.html" />
-    <Content Include="NextDisk\templates\error.html" />
     <Content Include="NextDisk\templates\files.html" />
     <Content Include="NextDisk\templates\Final_setting.html" />
     <Content Include="NextDisk\templates\layout_in.html" />
     <Content Include="NextDisk\templates\login.html" />
-    <Content Include="NextDisk\templates\loginerror.html" />
+    <Content Include="NextDisk\templates\error.html" />
     <Content Include="NextDisk\templates\registered_successfully.html" />
     <Content Include="NextDisk\templates\settings.html" />
     <Content Include="NextDisk\templates\signup_administrator.html" />
