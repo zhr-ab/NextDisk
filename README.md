@@ -12,36 +12,72 @@ apt install python3
 ```
 其他Linux发行版安装方式类似。
 
+# 创建虚拟环境
+
+我们建议您在一个虚拟python环境中运行NextDisk，您可以通过以下方式创建：
+如果您在使用Debian系Linux操作系统可能需要通过执行以下命令安装venv：
+```
+sudo apt install python3-venv
+```
+CentOS/RHEL系统则需要：
+```
+sudo yum install python3-venv
+```
+或
+```
+sudo dnf install python3-venv
+```
+Windows下默认会自动安装venv。
+
+接着便可以创建虚拟环境了：
+```
+python -m venv env
+```
+激活虚拟环境时需要在windows的cmd中执行
+```
+env\Scripts\activate
+```
+或在其他系统中执行
+```
+source myenv/bin/activate
+```
+最后当bash显示(env)xxx时代表已经成功激活虚拟环境了。
+
+如果你还没有安装pip请执行：
+```
+pip install pip
+```
+或在windows的python安装程序中勾选pip。
 # 安装和运行
 直接克隆此仓库的master分支：
 ```
 git clone https://github.com/zhr-ab/NextDisk.git
 ```
-或直接下载发布的[zip包](https://github.com/zhr-ab/NextDisk/releases/download/stable/NextDisk_stable_v1.0.0.zip)（仅项目文件，最小化）并解压，然后运行其中的runserver.py文件。运行前请执行以下命令安装依赖：
+或直接下载发布的[zip包](https://github.com/zhr-ab/NextDisk/releases/download/v1.0.5_H.J.T.J_Fix/NextDisk_v1.0.5_H.J.T.J_Fix.zip)（仅项目文件，最小化）并解压，然后运行其中的runserver.py文件。运行前请执行以下命令安装依赖：
 ```
 pip install -r requirements.txt
 ```
 
 # 设定端口和域名
-如果没有设定“serverport”或“serverhost”，则默认只可在服务器中使用 http://127.0.0.1:5555/ 访问。
+如果没有设定“SERVER_PORT”或“SERVER_HOST”，则默认只可在服务器中使用 http://127.0.0.1:5555/ 访问。
 
 建议您通过以下命令运行runserver.py以监听所有地址（0.0.0.0）：
 ```
-serverhost=0.0.0.0 python runserver.py
+SERVER_HOST=0.0.0.0 python runserver.py
 ```
 或者您想自定义端口为8080：
 ```
-serverhost=0.0.0.0 serverport=8080 python runserver.py
+SERVER_HOST=0.0.0.0 SERVER_PORT=8080 python runserver.py
 ```
 再或者您只想通过 http://nextdisk.com:8080/ 访问：
 ```
-serverhost=nextdisk.com serverport=8080 python runserver.py
+SERVER_HOST=nextdisk.com SERVER_PORT=8080 python runserver.py
 ```
 其他情况以此类推。需要注意的是，浏览器默认会访问服务器的80端口，如果不在URL中指定端口号（如`:8080`），则默认使用80端口。
 
 如果您想直接通过域名或IP（不加端口）访问NextDisk页面，请使用：
 ```
-serverhost=0.0.0.0 serverport=80 python runserver.py
+SERVER_HOST=0.0.0.0 SERVER_PORT=80 python runserver.py
 ```
 
 # 开始使用NextDisk
