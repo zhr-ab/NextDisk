@@ -1,5 +1,3 @@
-<head><link rel="icon" href="https://github.com/user-attachments/assets/4fa4fd3c-12cb-4748-a334-b0116d3a849e" type="image/png"></head>
-
 # NextDisk
 <img width="418" height="418" alt="IMG_202601055583_418x418" src="https://github.com/user-attachments/assets/2430d725-3dc6-4908-b245-e60880707f55" />
 
