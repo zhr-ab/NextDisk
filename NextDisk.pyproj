@@ -31,6 +31,7 @@
     <Compile Include="NextDisk\autostart.py" />
     <Compile Include="NextDisk\diskmanger.py" />
     <Compile Include="NextDisk\encryption.py" />
+    <Compile Include="NextDisk\fileserver.py" />
     <Compile Include="NextDisk\filesmanger.py" />
     <Compile Include="NextDisk\sql.py" />
     <Compile Include="runserver.py" />
@@ -61,7 +62,10 @@
     <Content Include="NextDisk\templates\error.html" />
     <Content Include="NextDisk\templates\registered_successfully.html" />
     <Content Include="NextDisk\templates\settings.html" />
+    <Content Include="NextDisk\templates\signup.html" />
     <Content Include="NextDisk\templates\signup_administrator.html" />
+    <Content Include="NextDisk\templates\signup_superuser.html" />
+    <Content Include="NextDisk\templates\signup_user.html" />
     <Content Include="requirements.txt" />
     <Content Include="NextDisk\static\content\bootstrap.css" />
     <Content Include="NextDisk\static\content\bootstrap.min.css" />

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ role_title|default('注册账户') }} - NextDisk</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='content/bootstrap.min.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='content/site.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='content/signup.css') }}">
+    <script src="{{ url_for('static', filename='scripts/signup.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/modernizr-2.6.2.js') }}"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='content/icon.png') }}" type="image/png">
+    <link rel="icon" href="data:,">
+</head>
+<body>
+
+    <div class="container body-content">
+        <div class="jumbotron signup-jumbo">
+            <h1>{{ role_title|default('注册账户') }}</h1>
+            {% if role_description %}
+            <p class="lead">{{ role_description }}</p>
+            {% endif %}
+
+            {% if role_permissions is defined and role_permissions %}
+            <ul class="permissions">
+                {% for p in role_permissions %}
+                <li>• {{ p }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            <p class="lead">基础信息</p>
+            <form id="registerForm" action="/register" method="POST" enctype="multipart/form-data">
+                <div class="input-group">
+                    <label class="input-label">用户名</label>
+                    <input type="text" class="input-field" id="username" name="username" placeholder="请输入用户名" maxlength="20">
+                    <span class="input-hint">请输入您的用户名</span>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">密码</label>
+                    <input type="password" id="password1" name="password" class="input-field" placeholder="请输入密码" maxlength="20">
+                    <span class="input-hint">请输入您的密码</span>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">确认密码</label>
+                    <input type="password" id="password2" class="input-field" placeholder="请重新输入密码" maxlength="20">
+                    <span class="input-hint">为避免误操作，请重新输入您的密码</span>
+                </div>
+                <p class="lead">个性化信息（可选）</p>
+                <div class="input-group">
+                    <label class="input-label">邮箱</label>
+                    <input type="email" name="email" class="input-field" placeholder="请输入邮箱" maxlength="64">
+                    <span class="input-hint">请输入您的邮箱</span>
+                </div>
+                <hr />
+                <div class="input-group">
+                    <label class="input-label">手机号</label>
+                    <input type="text" name="phone" class="input-field" placeholder="请输入手机号" maxlength="32">
+                    <span class="input-hint">请输入您的手机号</span>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">年龄</label>
+                    <input type="text" name="age" class="input-field" placeholder="请输入年龄">
+                    <span class="input-hint">请输入您的年龄</span>
+                </div>
+                <div class="input-group file-group">
+                    <label class="input-label">头像</label>
+                    <label class="custom-file-label">
+                        <input type="file" name="file" class="input-field file-input" style="display:none;" accept=".ico,.png,.jpg,.jpeg,.bmp,.tif,.tiff,.svg,.gif">
+                        <span class="file-btn">选择文件</span>
+                        <span class="file-name">未选择文件</span>
+                    </label>
+                    <span class="input-hint">请定义您的头像（选择非列出的图像/图标文件后将无法创建账户）。</span>
+                    <img width="96" height="96" src="{{ default_icon_url if default_icon_url is defined else url_for('static', filename='content/icon.png') }}" alt="default-avatar" class="avatar-preview"/>
+                <!-- 提交默认图标链接，视 role 模板中是否设置 -->
+                <input type="hidden" name="icon_url" value="{{ default_icon_url|default('') }}">
+                </div>
+                <hr />
+                <h4>自动登录</h4>
+                <label class="checkbox-container icon">
+                    <input type="checkbox" id="memory" name="memory" value="memory">
+                    记住该账户
+                </label>
+                <h6>此设备下次访问NextDisk时无需输入用户名和密码即可自动登录（有效期180天）。</h6>
+                <div id="error-message" class="error-message"></div>
+                <hr />
+                <p>
+                    <a href="#" id="submitBtn" class="btn btn-primary btn-large">立即注册 &raquo;</a>
+                    <a href="/login" class="btn btn-secondary btn-large">返回登录 &raquo;</a>
+                </p>
+            </form>
+        </div>
+
+        <hr />
+        <footer>
+            <p>&copy; {{ year or '' }} - NextDisk</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='scripts/jquery-1.10.2.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='scripts/respond.js') }}"></script>
+
+</body>
+</html>

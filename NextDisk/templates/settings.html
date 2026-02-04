@@ -4,6 +4,24 @@
 
 <h1>NextDisk设置</h1>
 <p>在这里，您可以配置NextDisk的各项设置。</p>
+<h2>文件服务器(FileServer)</h2>
+<p>文件服务器允许您通过FTP或SMB协议访问和管理您的文件。您可以启动或关闭文件服务器功能。</p>
+<h4>FTP服务器状态</h4>
+{% if {{ftp_server_status}} = True %}
+<p>当前状态：<strong>已启动</strong></p>
+<a class="btn btn-danger" href="/ftp_server/stop">停止文件服务器</a>
+{% else %}
+<p>当前状态：<strong>已停止</strong></p>
+<a class="btn btn-success" href="/ftp_server/start">启动文件服务器</a>
+{% endif %}
+<h5>用户配置</h5>
+<form action="/ftp_server/reconfig" method="POST">
+    <input type="text" name="ftpusername" placeholder="ftp用户名" />
+    <input type="password" name="ftppassword" placeholder="ftp密码" />
+    <input type="submit" placeholder="保存" />
+</form>
+<hr />
+
 <p><a class="btn btn-default" href="/about">关于 &raquo;</a></p>
 
 {% endblock %}

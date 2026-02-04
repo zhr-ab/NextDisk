@@ -1,70 +1,7 @@
-﻿{% extends "layout.html" %}
+﻿{% extends "signup.html" %}
 
-{% block content %}
+{% set role_title = "注册管理员账户" %}
+{% set role_description = "创建新的管理员账户，管理员账户拥有以下权限：" %}
+{% set role_permissions = ["拥有独立文件空间", "管理设备上的其他账户", "为此服务器添加或删除插件", "管理此服务器上的其他资源"] %}
+{% set default_icon_url = "https://img.icons8.com/fluency/64/user-male-circle--v1.png" %}
 
-<link rel="stylesheet" href="{{ url_for('static', filename='content/files.css') }}">
-
-<div class="jumbotron">
-    <h1>注册管理员账户</h1>
-    <p class="lead">创建新的管理员账户，管理员账户拥有以下权限：</p>
-    <p>• 拥有独立文件空间</p>
-    <p>• 管理设备上的其他账户</p>
-    <p>• 为此服务器添加或删除插件</p>
-    <p>• 管理此服务器上的其他资源</p>
-    <p class="lead">基础信息</p>
-    <form id="registerForm" action="/register" method="POST" enctype="multipart/form-data">
-        <div class="input-group">
-            <label class="input-label">用户名</label>
-            <input type="text" class="input-field" id="username" name="username" placeholder="请输入用户名" maxlength="20">
-            <span class="input-hint">请输入您的用户名</span>
-        </div>
-        <div class="input-group">
-            <label class="input-label">密码</label>
-            <input type="password" id="password1" name="password" class="input-field" placeholder="请输入密码" maxlength="20">
-            <span class="input-hint">请输入您的密码</span>
-        </div>
-        <div class="input-group">
-            <label class="input-label">确认密码</label>
-            <input type="password" id="password2" class="input-field" placeholder="请重新输入密码" maxlength="20">
-            <span class="input-hint">为避免误操作，请重新输入您的密码</span>
-        </div>
-        <p class="lead">个性化信息（可选）</p>
-        <div class="input-group">
-            <label class="input-label">邮箱</label>
-            <input type="email" name="email" class="input-field" placeholder="请输入邮箱" maxlength="20">
-            <span class="input-hint">请输入您的邮箱</span>
-        </div>
-        <hr />
-        <div class="input-group">
-            <label class="input-label">手机号</label>
-            <input type="email" name="phone" class="input-field" placeholder="请输入手机号" maxlength="20">
-            <span class="input-hint">请输入您的手机号</span>
-        </div>
-        <div class="input-group">
-            <label class="input-label">年龄</label>
-            <input type="text" name="age" class="input-field" placeholder="请输入年龄">
-            <span class="input-hint">请输入您的年龄</span>
-        </div>
-        <div class="input-group">
-            <label class="input-label">头像</label>
-            <label class="custom-file-label">
-                <input type="file" name="file" class="input-field" style="display:none;" accept=".ico,.png,.jpg,.jpeg,.bmp,.tif,.tiff,.svg,.gif" onchange="this.nextElementSibling.innerText=this.files[0]?.name||'选择文件'">
-                <span class="file-btn">选择文件</span>
-            </label>
-            <span class="input-hint">请定义您的头像（选择非列出的图像/图标文件后将无法创建账户），下面是默认管理员用户图标。</span>
-            <img width="96" height="96" src="https://img.icons8.com/fluency/96/user-male-circle--v1.png" alt="user-male-circle--v1" />
-        </div>
-        <hr />
-        <h4>自动登录</h4>
-        <label class="checkbox-container icon">
-            <input type="checkbox" name="memory">
-            记住该账户
-        </label>
-        <h6>此设备下次访问NextDisk时无需输入用户名和密码即可自动登录（有效期180天）。</h6>
-        <div id="error-message" style="color: red; font-size: 14px;"></div>
-        <hr />
-        <p><a href="#" onclick="return submitForm();" class="btn btn-primary btn-large">立即注册 &raquo;</a>   <a href="/login" class="btn btn-primary btn-large">返回登录 &raquo;</a></p>
-    </form>
-</div>
-
-{% endblock %}

@@ -15,15 +15,25 @@ import os
 import time
 import requests
 import secrets
+from werkzeug.utils import secure_filename
+from NextDisk.fileserver import fileserver
+from urllib.parse import urlparse
+import mimetypes
 
 def download_image(url, save_path):
-    response = requests.get(url)
-    if response.status_code == 200: # 确保请求成功
-        with open(save_path, 'wb') as file:
-            file.write(response.content)
-            print("图片下载成功！")
-    else:
-        print("图片下载失败，状态码：", response.status_code)
+    try:
+        response = requests.get(url, timeout=10)
+        if response.status_code == 200: # 确保请求成功
+            with open(save_path, 'wb') as file:
+                file.write(response.content)
+                print("图片下载成功！")
+            return True
+        else:
+            print("图片下载失败，状态码：", response.status_code)
+            return False
+    except Exception as e:
+        print("图片下载异常：", e)
+        return False
 
 #允许的文件扩展名集合
 ALLOWED_EXTENSIONS = {'ico', 'png', 'jpg', 'jpeg', 'bmp', 'tif', 'tiff', 'svg', 'gif'}
@@ -148,11 +158,23 @@ def signup_administrator():
  #注册高级用户账户
 @app.route('/signup/superuser')
 def signup_superuser():
-    pass
+    """Renders the signup_superuser page."""
+    return render_template(
+        'signup_superuser.html',
+        title='注册高级用户账号',
+        year=datetime.now().year,
+        message='注册高级用户账户'
+    )
  #注册用户账户
 @app.route('/signup/user')
 def signup_user():
-    pass
+    """Renders the signup_user page."""
+    return render_template(
+        'signup_user.html',
+        title='注册普通用户账号',
+        year=datetime.now().year,
+        message='注册普通用户账户'
+    )
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'GET':
@@ -211,42 +233,73 @@ def register():
      memory = request.form.get('memory', '').strip()
 
      os.makedirs("images", exist_ok=True)
-     # 如果没有上传文件或文件名为空，保存默认图标
-     if not file or file.filename == '':
-         download_image("https://img.icons8.com/fluency/96/user-male-circle--v1.png",os.path.join("images","aico.png"))
-         # 记录已注册并保存时间戳
-         with open("status.txt", "w") as f:
-             f.write(f"registered_successfully,{time.time()}")
-         # 始终生成cookie，确保自动登录功能可用
-         cookie_value = secrets.token_hex(32)
-         if memory == "memory":
-             resp = make_response(render_template('registered_successfully.html'))
-             resp.set_cookie('usercookie',cookie_value , max_age=180*24*60*60)  # 180天持久化cookie
-         else:
-             resp = make_response(render_template('registered_successfully.html'))
-             resp.set_cookie('usercookie',cookie_value) # 会话cookie，浏览器关闭后失效，但数据库中仍有记录
-         insert(username,password,email,phone,age,cookie_value)
-         return resp
+     # 目标文件名基于用户名
+     safe_name = secure_filename(username) or f"user_{int(time.time())}"
+     icon_url = request.form.get('icon_url', '').strip()
 
-     # 验证文件扩展名
-     if file and allowed_file(file.filename):
-         filename = os.path.basename(file.filename)
-         dest = os.path.join("images", filename)
-         file.save(dest)
-         # 记录已注册并保存时间戳
-         with open("status.txt", "w") as f:
-             f.write(f"registered_successfully,{time.time()}")
-         cookie_value = secrets.token_hex(32)
-         if memory == "memory":
-             resp = make_response(render_template('registered_successfully.html'))
-             resp.set_cookie('usercookie',cookie_value , max_age=180*24*60*60)  # 180天
+     saved_icon_path = None
+
+     # 如果上传了文件，优先使用上传的文件并将其保存为用户名命名
+     if file and file.filename:
+         if allowed_file(file.filename):
+             _, ext = os.path.splitext(file.filename)
+             ext = ext if ext else '.png'
+             dest = os.path.join("images", safe_name + ext)
+             file.save(dest)
+             saved_icon_path = dest
          else:
-             resp = make_response(render_template('registered_successfully.html'))
-             resp.set_cookie('usercookie',cookie_value) #服务器关闭后cookie失效
-         insert(username,password,email,phone,age,cookie_value)
-         return resp
+             return render_template('error.html',title='文件扩展名无效', message='您上传的文件扩展名错误，请点击下面按钮返回登录。', back_text='返回登录')
      else:
-         return render_template('error.html',title='文件扩展名无效', message='您上传的文件扩展名错误，请点击下面按钮返回登录。', back_text='返回登录')
+         # 如果提供了图标URL，尝试从URL下载并保存为用户名命名
+         if icon_url:
+             try:
+                 resp = requests.get(icon_url, timeout=10)
+                 if resp.status_code == 200 and resp.headers.get('content-type','').split(';')[0].startswith('image'):
+                     ctype = resp.headers.get('content-type','').split(';')[0]
+                     ext = mimetypes.guess_extension(ctype) or ''
+                     if ext == '.jpe':
+                         ext = '.jpg'
+                     if not ext:
+                         path = urlparse(icon_url).path
+                         ext = os.path.splitext(path)[1]
+                     if not ext:
+                         ext = '.png'
+                     # 校验扩展名
+                     if ext.lstrip('.').lower() not in ALLOWED_EXTENSIONS:
+                         ext = '.png'
+                     dest = os.path.join("images", safe_name + ext)
+                     with open(dest, 'wb') as f:
+                         f.write(resp.content)
+                     saved_icon_path = dest
+                 else:
+                     # 下载失败，回退到默认图标
+                     dest = os.path.join("images", safe_name + '.png')
+                     download_image("https://img.icons8.com/fluency/64/user-male-circle--v1.png", dest)
+                     saved_icon_path = dest
+             except Exception:
+                 dest = os.path.join("images", safe_name + '.png')
+                 download_image("https://img.icons8.com/fluency/64/user-male-circle--v1.png", dest)
+                 saved_icon_path = dest
+         else:
+             # 无上传且无URL，使用默认图标
+             dest = os.path.join("images", safe_name + '.png')
+             download_image("https://img.icons8.com/fluency/64/user-male-circle--v1.png", dest)
+             saved_icon_path = dest
+
+     # 记录已注册并保存时间戳
+     with open("status.txt", "w") as f:
+         f.write(f"registered_successfully,{time.time()}")
+
+     # 始终生成cookie，确保自动登录功能可用
+     cookie_value = secrets.token_hex(32)
+     if memory == "memory":
+         resp = make_response(render_template('registered_successfully.html'))
+         resp.set_cookie('usercookie',cookie_value , max_age=180*24*60*60)  # 180天持久化cookie
+     else:
+         resp = make_response(render_template('registered_successfully.html'))
+         resp.set_cookie('usercookie',cookie_value) # 会话cookie，浏览器关闭后失效，但数据库中仍有记录
+     insert(username,password,email,phone,age,cookie_value)
+     return resp
 
 @app.route('/submit',methods=["POST"])
 def submit():
@@ -300,6 +353,8 @@ def settings():
             title='设置',
             year=datetime.now().year,
             message='NextDisk 设置',
+            ftp_server_status=fileserver.get_ftp_status(),
+            smb_server_status=fileserver.get_smb_status(),
             username=username
         )
 
@@ -358,3 +413,49 @@ def delete_file(filename):
         with open("edit_log.log", "a") as log_file:
             log_file.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}: Deleted {filename}\n")
     return redirect(url_for('files'))
+
+@app.route("/ftp_server/<operate>")
+def stop_ftp_server(operate):
+    # 检查登录状态
+    check_auth()
+    # 完成操作
+    if operate == 'stop':
+        fileserver.stop_ftp_server()
+    elif operate == 'start':
+        try:
+            with open("ftp_config.txt", "r") as f:
+                lines = f.readlines()
+                if len(lines) >= 2:
+                    ftpusername = lines[0].strip()
+                    ftppassword = lines[1].strip()
+                    if ftpusername and ftppassword:
+                        fileserver.start_ftp_server(anonymous=False, username=ftpusername, password=ftppassword)
+                    else:
+                        fileserver.start_ftp_server()
+                else:
+                    fileserver.start_ftp_server()
+            fileserver.start_ftp_server()
+        except FileNotFoundError:
+            with open("ftp_config.txt", "w") as f:
+                f.write("\n\n")
+    elif operate == 'reconfig' and request.method == 'POST':
+        ftpusername = request.form.get('ftpusername','').strip()
+        ftppassword = request.form.get('ftppassword','').strip()
+        try:
+            with open("ftp_config.txt", "r") as f:
+                before_ftpusername = f.readline().strip()
+                before_ftppassword = f.readline().strip()
+        except FileNotFoundError:
+            with open("ftp_config.txt", "w") as f:
+                f.write("\n\n")
+        with open("ftp_config.txt", "w") as f:
+            if ftpusername and ftppassword:
+                f.write(f"{ftpusername}\n{ftppassword}\n")
+            elif ftpusername:
+                f.write(f"{ftpusername}\n{before_ftppassword}\n")
+            elif ftppassword:
+                f.write(f"{before_ftpusername}\n{ftppassword}\n")
+            else:
+                f.write(f"{before_ftpusername}\n{before_ftppassword}\n")
+    # 重定向回设置页面
+    return redirect(url_for('settings'))

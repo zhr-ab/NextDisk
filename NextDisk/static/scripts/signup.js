@@ -23,3 +23,29 @@
     document.getElementById('registerForm').submit();
     return true;
 }
+
+// 兼容 DOMContentLoaded 的文件选择与头像预览
+document.addEventListener('DOMContentLoaded', function(){
+    var fileInput = document.querySelector('.file-input');
+    var fileName = document.querySelector('.file-name');
+    var fileBtn = document.querySelector('.file-btn');
+    var avatar = document.querySelector('.avatar-preview');
+
+    if(fileBtn && fileInput){
+        fileBtn.addEventListener('click', function(e){
+            e.preventDefault();
+            fileInput.click();
+        });
+    }
+    if(fileInput){
+        fileInput.addEventListener('change', function(){
+            var f = this.files[0];
+            if(fileName) fileName.textContent = f ? f.name : '未选择文件';
+            if(f && f.type && f.type.indexOf('image') === 0 && avatar){
+                var reader = new FileReader();
+                reader.onload = function(e){ avatar.src = e.target.result; }
+                reader.readAsDataURL(f);
+            }
+        });
+    }
+});
