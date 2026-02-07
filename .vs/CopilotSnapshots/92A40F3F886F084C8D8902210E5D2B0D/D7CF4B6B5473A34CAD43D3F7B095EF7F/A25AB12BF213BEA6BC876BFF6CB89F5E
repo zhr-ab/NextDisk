@@ -414,7 +414,7 @@ def delete_file(filename):
             log_file.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}: Deleted {filename}\n")
     return redirect(url_for('files'))
 
-@app.route("/ftp_server/<operate>", methods=['GET','POST'])
+@app.route("/ftp_server/<operate>")
 def stop_ftp_server(operate):
     # 检查登录状态
     check_auth()
@@ -434,21 +434,18 @@ def stop_ftp_server(operate):
                         fileserver.start_ftp_server()
                 else:
                     fileserver.start_ftp_server()
+            fileserver.start_ftp_server()
         except FileNotFoundError:
-            # create default config if not exists
             with open("ftp_config.txt", "w") as f:
                 f.write("\n\n")
     elif operate == 'reconfig' and request.method == 'POST':
         ftpusername = request.form.get('ftpusername','').strip()
         ftppassword = request.form.get('ftppassword','').strip()
-        before_ftpusername = ''
-        before_ftppassword = ''
         try:
             with open("ftp_config.txt", "r") as f:
                 before_ftpusername = f.readline().strip()
                 before_ftppassword = f.readline().strip()
         except FileNotFoundError:
-            # ensure file exists for future reads
             with open("ftp_config.txt", "w") as f:
                 f.write("\n\n")
         with open("ftp_config.txt", "w") as f:
