@@ -68,29 +68,28 @@ def index():
      """Renders the index page."""
      return redirect(url_for('home'))
 
-#处理favicon.ico请求，重定向到PNG图标
+# 处理favicon.ico请求，重定向到PNG图标
 @app.route('/favicon.ico')
 def favicon():
     return redirect(url_for('static', filename='content/icon.png'))
 
+# 登录前的主页（初始化项目）/  跳转其他页面
 @app.route('/home')
 def home():
      """Renders the home page."""
-     #读取status.txt内容（状态）
+     # 读取status.txt内容（状态）
      try:
          with open("status.txt", "r") as f:
             status = f.read().strip()
      except Exception:
-     # Avoid performing schema-modifying operations inside a request handler.
-     # To reset the database schema run the maintenance script `reset_schema.py` manually.
         status = "not initialized"
         clear_all_drop_schema()
-        #重新调用数据库初始化函数创建表
+        # 重新调用数据库初始化函数创建表
         from NextDisk.sql import _init_db
         _init_db()
      if len(searchall()) ==0 or status == "not initialized":
          clear_all_drop_schema()
-         #重新调用数据库初始化函数创建表
+         # 重新调用数据库初始化函数创建表
          from NextDisk.sql import _init_db
          _init_db()
          return render_template(
@@ -108,6 +107,7 @@ def home():
          )
      return redirect(url_for('login'))
 
+# 登录后的主页（桌面）
 @app.route('/desktop')
 def desktop():
      """Renders the desktop page."""
@@ -123,6 +123,7 @@ def desktop():
          disk_info=disk_info
      )
 
+# 联系作者页面
 @app.route('/contact')
 def contact():
      """Renders the contact page."""
@@ -133,7 +134,7 @@ def contact():
          message='hanhan'
      )
 
-
+# 关于页面
 @app.route('/about')
 def about():
      """Renders the about page。"""
@@ -144,7 +145,7 @@ def about():
          message='NextDisk'
      )
 
- #注册管理员账户
+# 注册管理员账户
 @app.route('/signup/administrator')
 def signup_administrator():
      """Renders the signup_administrator page."""
@@ -155,7 +156,7 @@ def signup_administrator():
      message='注册拥有最高权限的管理员账户',
      )
 
- #注册高级用户账户
+# 注册高级用户账户
 @app.route('/signup/superuser')
 def signup_superuser():
     """Renders the signup_superuser page."""
@@ -165,7 +166,8 @@ def signup_superuser():
         year=datetime.now().year,
         message='注册高级用户账户'
     )
- #注册用户账户
+
+# 注册用户账户
 @app.route('/signup/user')
 def signup_user():
     """Renders the signup_user page."""
@@ -175,6 +177,8 @@ def signup_user():
         year=datetime.now().year,
         message='注册普通用户账户'
     )
+
+# 获取登录信息并处理登录逻辑
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'GET':
@@ -222,6 +226,7 @@ def login():
     
     return response
 
+# 获取注册信息并处理注册逻辑
 @app.route('/register', methods=["POST"])
 def register():
      username = request.form.get('username', '').strip()
@@ -312,7 +317,7 @@ def submit():
         set_autostart()
     return redirect(url_for('home'), code=307)
 
-#管理文件
+# 管理文件
 @app.route('/files')
 def files():
     """Renders the files page."""
@@ -342,7 +347,7 @@ def files():
         zip=zip
     )
 
-#设置
+# 设置
 @app.route('/settings')
 def settings():
         """Renders the settings page."""
@@ -358,7 +363,7 @@ def settings():
             username=username
         )
 
-#下载文件
+# 下载文件
 @app.route('/download/<filename>')
 def download_file(filename):
     try:
@@ -403,7 +408,7 @@ def upload_file():
     
     return redirect(url_for('files'))
 
-#删除文件
+# 删除文件
 @app.route('/delete/<filename>')
 def delete_file(filename):
     storage_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'storage'))
@@ -414,6 +419,7 @@ def delete_file(filename):
             log_file.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}: Deleted {filename}\n")
     return redirect(url_for('files'))
 
+# ftp服务器操作
 @app.route("/ftp_server/<operate>", methods=['GET','POST'])
 def stop_ftp_server(operate):
     # 检查登录状态
@@ -431,13 +437,26 @@ def stop_ftp_server(operate):
                     if ftpusername and ftppassword:
                         fileserver.start_ftp_server(anonymous=False, username=ftpusername, password=ftppassword)
                     else:
-                        fileserver.start_ftp_server()
+                        return render_template(
+                                               'error.html',
+                                               title='FTP服务器配置错误', 
+                                               message='FTP服务器用户名或密码未正确配置，请点击下面按钮返回主页，如需使用ftp，在设置中添加用户密码后即可继续。', 
+                                               back_text='返回主页'
+                                               )
                 else:
-                    fileserver.start_ftp_server()
+                    return render_template(
+                                          'error.html',
+                                          title='FTP服务器配置错误',
+                                          message='FTP服务器用户名或密码未正确配置，请点击下面按钮返回主页，如需使用ftp，在设置中添加用户密码后即可继续。',
+                                          back_text='返回主页'
+                                          )
         except FileNotFoundError:
-            # create default config if not exists
-            with open("ftp_config.txt", "w") as f:
-                f.write("\n\n")
+            return render_template(
+                                  'error.html',
+                                  title='FTP服务器配置错误',
+                                  message='FTP服务器用户名或密码未正确配置，请点击下面按钮返回主页，如需使用ftp，在设置中添加用户密码后即可继续。',
+                                  back_text='返回主页'
+                                  )
     elif operate == 'reconfig' and request.method == 'POST':
         ftpusername = request.form.get('ftpusername','').strip()
         ftppassword = request.form.get('ftppassword','').strip()
@@ -448,7 +467,7 @@ def stop_ftp_server(operate):
                 before_ftpusername = f.readline().strip()
                 before_ftppassword = f.readline().strip()
         except FileNotFoundError:
-            # ensure file exists for future reads
+            # 确保文件存在以供后续读取
             with open("ftp_config.txt", "w") as f:
                 f.write("\n\n")
         with open("ftp_config.txt", "w") as f:
