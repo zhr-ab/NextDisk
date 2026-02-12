@@ -59,6 +59,13 @@ git clone https://github.com/zhr-ab/NextDisk.git
 pip install -r requirements.txt
 ```
 
+# 特别提醒
+若您直接克隆了存储库，请务必删除存储库根目录下的 ```status.txt``` 和 ```user.db``` 否则您将仅能通过测试账户登录：
+
+测试账户用户名：hanhan
+
+密码：123456
+
 # 设定端口和域名
 如果没有设定“SERVER_PORT”或“SERVER_HOST”，则默认只可在服务器中使用 http://127.0.0.1:5555/ 访问。
 
