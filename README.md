@@ -1,7 +1,7 @@
 # NextDisk
 <img width="418" height="418" alt="IMG_202601055583_418x418" src="https://github.com/user-attachments/assets/2430d725-3dc6-4908-b245-e60880707f55" />
 
-基于Python的私有云管理程序，适用于所有可以正常安装Python的平台（Windows、MacOS、Linux甚至Android），目前已实现基础功能（上传、下载、删除文件）。
+小学生自己的的私有云管理程序，基于Python全栈，适用于所有可以正常安装Python的平台（Windows、MacOS、Linux甚至Android），目前已实现基础功能（上传、下载、删除文件）。
 此页面旨在帮助您将NextDisk顺利的部署到您的服务器中，该服务器无需额外购买，可以是一台电脑或手机，甚至是一块树莓派。
 
 # 安装Python
