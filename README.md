@@ -97,5 +97,5 @@ SERVER_HOST=0.0.0.0 SERVER_PORT=80 python runserver.py
 
 下载完成后打开test.txt，当看到"您的NextDisk已经顺利部署并可以正常使用了！"时，代表您的NextDisk功能完全正常！
 
-# 说明
+# 支持我的开发
 如果您在使用NextDisk时遇到了问题，请通过创建Issues或Discussions的方式反馈给开发者，您的支持将是我们创造下去的最大动力！
