@@ -104,8 +104,7 @@ SERVER_HOST=0.0.0.0 SERVER_PORT=80 python runserver.py
 
 访问我的爱发电主页：
 
-<iframe src="https://afdian.com/leaflet?slug=zhr0624" width="640" scrolling="no" height="200" frameborder="0">
-</iframe><iframe src="https://afdian.com/leaflet?slug=zhr0624" width="640" scrolling="no" height="200" frameborder="0"></iframe>
+<a href="https://afdian.com/a/zhr0624">< img width="200" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt=""></a >
 
 或者通过buy me a coffee :
 
