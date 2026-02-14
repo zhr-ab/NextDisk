@@ -106,4 +106,3 @@ SERVER_HOST=0.0.0.0 SERVER_PORT=80 python runserver.py
 
 <a href="https://afdian.com/a/zhr0624" target="_blank"><img width="802" height="262" alt="image" src="https://github.com/user-attachments/assets/cb2cb136-4706-4e1b-ba8a-9b94a863d24b" /></a> 
 
-<hr/>
