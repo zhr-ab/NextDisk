@@ -104,5 +104,5 @@ SERVER_HOST=0.0.0.0 SERVER_PORT=80 python runserver.py
 
 访问我的爱发电主页：
 
-<a href="https://afdian.com/a/zhr0624" target="_blank"><img width="802" height="262" alt="image" src="https://github.com/user-attachments/assets/cb2cb136-4706-4e1b-ba8a-9b94a863d24b" /></a> 
+<a href="https://afdian.com/a/zhr0624" target="_blank"><img width="801" height="273" alt="image" src="https://github.com/user-attachments/assets/53d4a64f-b5f6-4b76-b463-742dd004f11c" /></a> 
 
