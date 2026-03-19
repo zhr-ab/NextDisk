@@ -4,44 +4,57 @@ Routes and views for the flask application.
 
 from datetime import datetime
 from flask import render_template, request, make_response, jsonify, redirect, url_for, send_from_directory, abort, g, session
-from NextDisk.diskmanger import get_disk_info
 import flask
 from NextDisk import app
 from NextDisk.sql import insert, searchall, search, clear_all_drop_schema, get_setting, insert_setting, update_cookie, authenticate_user
-from NextDisk.encryption import generate_symmetric_key, symmetric_encrypt, symmetric_decrypt
 from NextDisk.filesmanger import filesmanger
-from NextDisk.autostart import set_autostart
+from NextDisk.tools import set_autostart, download_image, allowed_file, ALLOWED_EXTENSIONS, get_metrics
 import os
 import time
 import requests
+import threading
 import secrets
 from werkzeug.utils import secure_filename
 from NextDisk.fileserver import fileserver
 from urllib.parse import urlparse
 import mimetypes
+import shutil
 
-def download_image(url, save_path):
-    try:
-        response = requests.get(url, timeout=10)
-        if response.status_code == 200: # 确保请求成功
-            with open(save_path, 'wb') as file:
-                file.write(response.content)
-                print("图片下载成功！")
-            return True
-        else:
-            print("图片下载失败，状态码：", response.status_code)
-            return False
-    except Exception as e:
-        print("图片下载异常：", e)
-        return False
+# 今日新增
+day_add = 0
 
-#允许的文件扩展名集合
-ALLOWED_EXTENSIONS = {'ico', 'png', 'jpg', 'jpeg', 'bmp', 'tif', 'tiff', 'svg', 'gif'}
+# 最近使用
+Recently_used = []
 
+# 程序启动时记录
+_START_TIME = time.time()
 
-def allowed_file(filename):
-     """检查文件名是否包含允许的扩展名"""
-     return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS
+def run_time():
+    """返回程序已运行的整数天数"""
+    return int(time.time() - _START_TIME) // 86400
+
+# 获取当前工作目录所在驱动器
+current_drive = os.path.splitdrive(os.getcwd())[0] or '/'
+
+# 获取磁盘使用情况
+total, used, free = shutil.disk_usage(current_drive)
+
+stats = type('Stats', (), {
+    '_lock': threading.Lock(),
+    'upload': lambda s, size: s._lock and setattr(s, 'u', getattr(s, 'u', 0) + size),
+    'download': lambda s, size: s._lock and setattr(s, 'd', getattr(s, 'd', 0) + size),
+    'get': lambda s: {'upload_mb': round(getattr(s, 'u', 0)/(1024 * 1024), 2), 'download_mb': round(getattr(s, 'd', 0)/(1024 * 1024), 2)},
+    'reset': lambda s: s._lock and (setattr(s, 'u', 0), setattr(s, 'd', 0))
+})()
+
+# 每分钟清零一次的定时器
+def reset_loop():
+    while True:
+        time.sleep(60) 
+        stats.reset()
+
+threading.Thread(target=reset_loop, daemon=True).start()
+
 
 def check_auth():
     """检查用户是否已登录"""
@@ -100,10 +113,9 @@ def home():
      elif "registered_successfully" in status:
          with open("status.txt", "w") as f:
              f.write("all done")
-         key = generate_symmetric_key()
          return render_template(
              'Final_setting.html',
-             key=key
+             key="功能暂未启用"
          )
      return redirect(url_for('login'))
 
@@ -112,15 +124,19 @@ def home():
 def desktop():
      """Renders the desktop page."""
      check_auth()  # 检查登录状态
-     disk_info = get_disk_info()
      username = session.get('username') or getattr(g, 'username', None)
      return render_template(
          'desktop.html',
+         total = round(total / 1024 ** 3, 1),
          title='桌面',
+         run_time=run_time(),
+         today_add=day_add,
          year=datetime.now().year,
+         mem_total=round(get_metrics()['mem_total'], 1),
+         cores=get_metrics()['cores'],
+         threads=get_metrics()['threads'],
          message='NextDisk',
-         username=username,
-         disk_info=disk_info
+         username=username
      )
 
 # 联系作者页面
@@ -343,6 +359,7 @@ def files():
         username=username,
         filelist=filelist,
         notelist=notelist,
+        rfl=filesmanger.listfiles(),
         sizelist=filesmanger.listsize(),
         zip=zip
     )
@@ -359,7 +376,6 @@ def settings():
             year=datetime.now().year,
             message='NextDisk 设置',
             ftp_server_status=fileserver.get_ftp_status(),
-            smb_server_status=fileserver.get_smb_status(),
             username=username
         )
 
@@ -368,6 +384,8 @@ def settings():
 def download_file(filename):
     try:
         storage_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'storage'))
+        filepath = os.path.join(storage_dir, filename)
+        stats.download(os.path.getsize(filepath))
         return send_from_directory(storage_dir, filename, as_attachment=True)
     except FileNotFoundError:
         abort(404)
@@ -380,7 +398,12 @@ def upload_file():
     file = request.files['file']
     if file.filename == '':
         return redirect(url_for('files'))
-    
+    file.seek(0, 2)          # 移到文件末尾
+    file_size = file.tell()  # 返回的就是字节数
+    file.seek(0) 
+    stats.upload(file_size)
+    day_add += 1
+
     if file:
         storage_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'storage'))
         os.makedirs(storage_dir, exist_ok=True)
@@ -463,7 +486,7 @@ def stop_ftp_server(operate):
         before_ftpusername = ''
         before_ftppassword = ''
         try:
-            with open("ftp_config.txt", "r") as f:
+            with open("ftp_config.txt", "r") as f:  
                 before_ftpusername = f.readline().strip()
                 before_ftppassword = f.readline().strip()
         except FileNotFoundError:
@@ -481,3 +504,36 @@ def stop_ftp_server(operate):
                 f.write(f"{before_ftpusername}\n{before_ftppassword}\n")
     # 重定向回设置页面
     return redirect(url_for('settings'))
+
+# 资源监控
+@app.route('/api/progress')
+def progress():
+    disk_used_percent = used / total * 100
+    disk_free_gb = free / 1024 ** 3
+    return jsonify({
+        'upload': stats.get()['upload_mb'],
+        'download': stats.get()['download_mb'],
+        'disksize': round(disk_used_percent, 1),                        # 保留1位小数
+        'freesize': round(disk_free_gb, 1),                                # 保留1位小数
+        'cpu': get_metrics()['cpu'],
+        'mem': round(get_metrics()['mem'], 1),                      # 保留1位小数
+        'mem_available': round(get_metrics()['mem_available'], 1),      # 保留1位小数
+        'total_load': get_metrics()['total_load'],
+        'procs': get_metrics()['procs'],
+        'load_factor': get_metrics()['procs'] / 10,
+        'disk': round(get_metrics()['disk_io_rate'], 1),                             # 保留1位小数
+        'disk_io_score': round(get_metrics()['disk_io_score'], 1),  # 保留1位小数
+        'net': round(get_metrics()['net_rate'], 1),                 # 保留1位小数
+        'net_score': round(get_metrics()['net_score'], 1)  # 保留1位小数
+    })
+
+# 提示
+@app.route('/tips/<tips_text>')
+def tips(tips_text):
+    context = tips_text.split(" | ")[1]
+    tips = tips_text.split(" | ")[0]
+    return render_template(
+        'tips.html',
+        tips_text=tips,
+        context=context
+    )

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 添加Bootstrap样式 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .tip {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column; /* 垂直排列 */
+            position: relative; /* 为绝对定位子元素提供参照 */
+        }
+
+        /* 自定义按钮样式 */
+        .custom-btn {
+            margin-top: 20px;
+            width: 200px; /* 固定宽度 */
+        }
+
+        /* 提示文本容器 - 添加换行支持 */
+        .tips-container {
+            text-align: center;
+            max-width: 80%;
+            margin: 20px 0;
+            white-space: pre-wrap; /* 保留换行符 */
+            word-wrap: break-word; /* 长单词换行 */
+        }
+    </style>
+    <title>提示</title>
+</head>
+<body>
+    <div class="tip"><h3>{{context}}</h3></div>
+
+    <!-- 添加换行支持的容器 -->
+    <div class="tips-container">
+        <h1>{{tips_text}}</h1>
+    </div>
+
+    <button class="btn btn-light btn-sm mb-2 custom-btn" onclick="window.close()">关闭</button>
+</body>
+</html>
