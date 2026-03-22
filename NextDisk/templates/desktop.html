@@ -51,7 +51,7 @@
                                 <div class="fs-4 fw-bold text-white">
                                     <button type="button"
                                             class="btn btn-light btn-sm mb-2 w-100"
-                                            onclick="window.open('/files', '_blank', 'width=854,height=480')">
+                                            onclick="window.open('/files', 'tipWindow', 'width=854,height=480,left=100,top=100')">
                                         文件
                                     </button>
                                 </div>
@@ -383,8 +383,25 @@
                         // 网络得分进度条
                         document.getElementById('net-bar').querySelector('.progress-bar').style.width = data.net_score + '%';
                     })
-                    .catch(err => console.error('获取数据失败:', err)); // 加上错误处理方便调试
+                    .catch(err => console.error('获取数据失败:', err));
             }, 2000);
+
+            // 将 refreshClick 移到这里，确保全局唯一
+            window.refreshClick = function () {
+                var img = document.getElementById('refreshGif');
+
+                // 添加时间戳防止缓存问题
+                img.src = "static/content/refresh.apng?" + Date.now();
+
+                // 确保动画有时间播放
+                setTimeout(function () {
+                    try {
+                        location.reload();
+                    } catch (e) {
+                        console.log('页面刷新失败:', e);
+                    }
+                }, 400);
+            }
         });
     </script>
 </body>

@@ -360,9 +360,9 @@ def files():
     
     return render_template(
         'files.html',
-        title='文件管理',
+        title='远程文件管理器',
         year=datetime.now().year,
-        message='NextDisk 文件管理器',
+        message='远程文件管理器',
         username=username,
         filelist=filelist,
         notelist=notelist,
@@ -564,3 +564,12 @@ def tips(tips_text):
         tips_text=tips,
         context=context
     )
+
+# 404错误
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('error.html',
+                           title="404 - 找不到您请求的页面",
+                           message="对不起，您访问的页面不存在，请检查您输入的url路径是否正确。",
+                           back_text="返回主页"
+                           ), 404
