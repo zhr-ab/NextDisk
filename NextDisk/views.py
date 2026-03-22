@@ -19,6 +19,12 @@ from NextDisk.fileserver import fileserver
 from urllib.parse import urlparse
 import mimetypes
 import shutil
+from flask_wtf.csrf import CSRFProtect
+
+app.secret_key = secrets.token_hex(32)
+
+# 启用CSRF保护
+csrf = CSRFProtect(app)
 
 # 今日新增
 day_add = 0
@@ -136,6 +142,7 @@ def desktop():
          cores=get_metrics()['cores'],
          threads=get_metrics()['threads'],
          message='NextDisk',
+         Recently_used=Recently_used,
          username=username
      )
 
@@ -364,6 +371,21 @@ def files():
         zip=zip
     )
 
+# ftp服务器页面
+@app.route('/ftp')
+def ftp():
+        """Renders the ftp page."""
+        check_auth()  # 检查登录状态
+        username = session.get('username') or getattr(g, 'username', None)
+        return render_template(
+            'ftp.html',
+            title='NextDisk',
+            year=datetime.now().year,
+            message='ftp服务器',
+            ftp_server_status=fileserver.get_ftp_status(),
+            username=username
+        )
+
 # 设置
 @app.route('/settings')
 def settings():
@@ -372,9 +394,9 @@ def settings():
         username = session.get('username') or getattr(g, 'username', None)
         return render_template(
             'settings.html',
-            title='设置',
+            title='NextDisk',
             year=datetime.now().year,
-            message='NextDisk 设置',
+            message='NextDisk设置',
             ftp_server_status=fileserver.get_ftp_status(),
             username=username
         )
@@ -382,10 +404,14 @@ def settings():
 # 下载文件
 @app.route('/download/<filename>')
 def download_file(filename):
+    check_auth()
     try:
         storage_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'storage'))
         filepath = os.path.join(storage_dir, filename)
         stats.download(os.path.getsize(filepath))
+        Recently_used.insert(0, filename)
+        if(len(Recently_used) > 8):
+            Recently_used.pop()
         return send_from_directory(storage_dir, filename, as_attachment=True)
     except FileNotFoundError:
         abort(404)
@@ -393,6 +419,7 @@ def download_file(filename):
 # 上传文件
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    global day_add
     if 'file' not in request.files:
         return redirect(url_for('files'))
     file = request.files['file']

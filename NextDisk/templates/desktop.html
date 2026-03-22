@@ -35,7 +35,7 @@
 
         <!-- 第一行：关键指标 -->
         <div class="row g-4 mb-4">
-            <div class="col-xl-6 col-lg-6">
+            <div class="col-xl-7 col-lg-6">
                 <div class="dashboard-tile bg-primary p-4 rounded-1 border border-warning shadow-sm">
 
                     <!-- 第一行：左上 & 右上 -->
@@ -49,7 +49,11 @@
                                 <h3 class="h5 fw-bold text-white">文件</h3>
                                 <p class="text-white-50 mb-2">查看您库中的所有文件</p>
                                 <div class="fs-4 fw-bold text-white">
-                                    <a href="/files" class="btn btn-light btn-sm mb-2 w-100">文件</a>
+                                    <button type="button"
+                                            class="btn btn-light btn-sm mb-2 w-100"
+                                            onclick="window.open('/files', '_blank', 'width=854,height=480')">
+                                        文件
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -77,12 +81,38 @@
                         <!-- 左下 -->
                         <div class="col-6">
                             <div class="tile-bottom-left h-100">
-                                <h6 class="text-white fw-bold mb-2">最近使用的文件</h6>
+                                <h6 class="text-white fw-bold mb-2 d-flex align-items-center justify-content-between">
+                                    <span>最近使用的文件</span>
+                                    <span onclick="refreshClick()">
+                                        <img id="refreshGif"
+                                             src="static/content/refresh.png"
+                                             width="24"
+                                             height="24"
+                                             alt="刷新"
+                                             style="cursor:pointer;">
+                                    </span>
+                                </h6>
+
+                                <script>
+                                    function refreshClick() {
+                                        // 点击后换成 APNG
+                                        var img = document.getElementById('refreshGif');
+                                        img.src = "static/content/refresh.apng";
+
+                                        // 1 秒后刷新页面
+                                        setTimeout(function () { location.reload(); }, 1000);
+                                    }
+                                </script>
                                 <ul class="list-unstyled mb-0" style="columns: 1;">
-                                    <li class="text-white-50 mb-1">📄 项目计划书.docx</li>
-                                    <li class="text-white-50 mb-1">📊 季度报表.xlsx</li>
-                                    <li class="text-white-50 mb-1">🖼️ 设计稿_v1.png</li>
-                                    <li class="text-white-50 mb-1">📝 会议纪要.pdf</li>
+                                    {% if Recently_used != [] %}
+                                    {% for i in Recently_used %}
+                                    <li class="text-white-50 mb-1">📄 {{i}}</li>
+                                    {% endfor %}
+                                    {% else %}
+                                    <li class="d-flex justify-content-center align-items-center" style="min-height: 100px; list-style: none;">
+                                        <span class="text-muted opacity-50">暂无数据</span>
+                                    </li>
+                                    {% endif %}
                                 </ul>
                             </div>
                         </div>
@@ -125,7 +155,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-6 col-lg-6">
+            <div class="col-xl-5 col-lg-6">
                 <div class="dashboard-tile bg-secondary p-4 rounded-1 border border-warning shadow-sm">
 
                     <!-- 第一行：左上 & 右上 -->
@@ -135,10 +165,10 @@
                             <div style="display: flex; justify-content: center;">
                                 <div class="col-6">
                                     <div class="tile-top-left h-100 d-flex flex-column justify-content-center align-items-start">
-                                    <div class="tile-icon text-warning mb-2">🚀</div>
-                                    <h3 class="h5 fw-bold text-white">运行状态</h3>
-                                    <p class="text-white-50 mb-2">总负载实时显示</p>
-                                    <div class="fs-4 fw-bold text-warning"><span id="total_text">0%</span></div>
+                                        <div class="tile-icon text-warning mb-2">🚀</div>
+                                        <h3 class="h5 fw-bold text-white">运行状态</h3>
+                                        <p class="text-white-50 mb-2">总负载实时显示</p>
+                                        <div class="fs-4 fw-bold text-warning"><span id="total_text">0%</span></div>
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -155,11 +185,11 @@
                                                 <p>实时预览</p>
                                             </div>
                                         </svg>
-                                        
+
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
 
                         <!-- 右上 -->
@@ -242,18 +272,21 @@
         <div class="row g-4">
             <div class="col-lg-8">
                 <div class="dashboard-tile bg-white p-4 rounded-1 shadow">
-                    <h3 class="h5 fw-bold mb-3">主要功能</h3>
+                    <h3 class="h5 fw-bold mb-3">其他应用</h3>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <div class="p-3 rounded-2 bg-light">
-                                <h6 class="fw-bold">功能模块A</h6>
-                                <p class="small text-muted mb-0">功能描述信息</p>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <h6 class="fw-bold mb-0">AI Agent</h6>
+                                    <div class="bg-warning text-dark px-2 py-1 rounded small mb-0">openclow同源技术</div>
+                                </div>
+                                <p class="small text-muted mb-0">正在开发中，详见aiagent.py</p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="p-3 rounded-2 bg-light">
-                                <h6 class="fw-bold">功能模块B</h6>
-                                <p class="small text-muted mb-0">功能描述信息</p>
+                                <h6 class="fw-bold">Web IDE</h6>
+                                <p class="small text-muted mb-0">正在开发中</p>
                             </div>
                         </div>
                     </div>
@@ -262,18 +295,35 @@
 
             <div class="col-lg-4">
                 <div class="dashboard-tile bg-white p-4 rounded-1 shadow">
-                    <h3 class="h5 fw-bold mb-3">快捷操作</h3>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary rounded-pill">添加项目</button>
-                        <button class="btn btn-outline-primary rounded-pill">导出数据</button>
-                        <button class="btn btn-outline-secondary rounded-pill">设置</button>
+                    <h3 class="h5 fw-bold mb-3">高级选项</h3>
+                    <div class="row g-2">
+                        <div class="col-4">
+                            <button class="btn btn-primary w-100 rounded d-flex flex-column align-items-center justify-content-center p-2"
+                                onclick="window.open('/ftp', 'tipWindow', 'width=800,height=500,left=100,top=100')">
+                                <img width="48" height="48" src="https://img.icons8.com/fluency/48/nas.png" alt="nas" />
+                                <p class="mb-0">ftp连接</p>
+                            </button>
+                        </div>
+                        <div class="col-4">
+                            <button class="btn btn-primary w-100 rounded d-flex flex-column align-items-center justify-content-center p-2"
+                                     onclick="window.open('/about', 'tipWindow', 'width=800,height=500,left=100,top=100')">
+                                <img width="48" height="48" src="https://img.icons8.com/fluency/48/info.png" alt="info" />
+                                <p class="mb-0">关于</p>
+                            </button>
+                        </div>
+                        <div class="col-4">
+                            <button class="btn btn-primary w-100 rounded d-flex flex-column align-items-center justify-content-center p-2" 
+                                    onclick="window.open('/settings', 'tipWindow', 'width=800,height=500,left=100,top=100')">
+                                <img width="48" height="48" src="https://img.icons8.com/fluency/48/settings.png" alt="settings" />
+                                <p class="mb-0">设置</p>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JS 放到 body 末尾，确保 DOM 加载完成 -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             setInterval(function () {
@@ -338,4 +388,9 @@
         });
     </script>
 </body>
+{% extends "layout.html" %}
+
+{% block content %}
+
+{% endblock %}
 </html>

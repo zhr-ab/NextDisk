@@ -1,8 +1,9 @@
-﻿<!DOCTYPE html>
-<html lang="zh-CN">
-<body>
+﻿{% extends "layout.html" %}
+
+{% block content %}
 <h1>NextDisk文件管理</h1>
-<p>欢迎使用NextDisk文件管理系统。在这里，您可以上传、下载和管理您的文件。</p>
+<p>欢迎使用NextDisk文件管理系统。</p>
+
 <ul>
     {% for file, size, note, rf in zip(filelist, sizelist, notelist, rfl) %}
     {% if file != 'edit_log.log' %}
@@ -14,18 +15,21 @@
     {% endif %}
     {% endfor %}
 </ul>
-<hr />
-<form id="registerForm" action="/upload" method="POST" enctype="multipart/form-data">
-    <label class="custom-file-label">
-        <input type="file" name="file" class="input-field" style="display:none;" onchange="this.nextElementSibling.innerText=this.files[0]?.name||'选择文件'">
-        <span class="file-btn">选择文件</span>
-    </label>
-    <input type="submit" value="上传" class="upload-btn">
-</form>
-</body>
-<head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='content/files.css') }}">
-    <title>NextDisk文件管理</title>
-</head>
-</html>
 
+<hr />
+<form action="/upload" method="POST" enctype="multipart/form-data">
+    <div style="width:130px;height:150px;border:2px dashed #ccc;border-radius:8px;padding:10px;text-align:center;cursor:pointer;box-sizing:border-box"
+         onclick="this.nextElementSibling.click()">
+        <img src="https://cdn-icons-png.flaticon.com/512/136/136521.png" width="45" height="45">
+        <br />
+        <br style="line-height: 5px;">
+        <span style="font-size:10px; display:block; margin-top: 2px;">
+            点击或拖拽文件到此处以上传文件，仅支持单文件上传
+        </span>
+        <div style="width: 80%; margin: 5px auto; padding: 5px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee;box-sizing:border-box;">
+            <span id="fn" style="font-size:12px; color:#666;">未选择文件</span>
+        </div>
+    </div>
+    <input type="file" name="file" style="display:none" onchange="document.getElementById('fn').innerText=this.files[0]?.name">
+</form>
+{% endblock %}

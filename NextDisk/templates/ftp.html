@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h1>NextDisk ftp</h1>
+<p>在这里，您可以配置NextDisk ftp服务器的各项设置。</p>
+<h2>文件服务器(FileServer)</h2>
+<p>文件服务器允许您通过FTP或SMB协议访问和管理您的文件。您可以启动或关闭文件服务器功能。</p>
+<h4>FTP服务器状态</h4>
+{% if ftp_server_status%}
+<p>当前状态：<strong>已启动</strong></p>
+<br />
+<a class="btn btn-danger" href="/ftp_server/stop">停止文件服务器</a>
+{% else %}
+<p>当前状态：<strong>已停止</strong></p>
+<a class="btn btn-success" href="/ftp_server/start">启动文件服务器</a>
+{% endif %}
+<div style="margin-top: 20px;"></div>
+<h4>用户配置</h4>
+<form action="{{ url_for('stop_ftp_server', operate='reconfig') }}" method="POST" class="ftp-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="form-group">
+        <label>FTP 用户名</label>
+        <input type="text" name="ftpusername" placeholder="输入用户名" required>
+    </div>
+
+    <div class="form-group">
+        <label>FTP 密码</label>
+        <input type="password" name="ftppassword" placeholder="输入密码" required>
+    </div>
+
+    <button type="submit" class="btn">保存配置</button>
+</form>
+
+<style>
+    .ftp-form {
+        max-width: 400px;
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+</style>
+<hr />
+
+
+{% endblock %}

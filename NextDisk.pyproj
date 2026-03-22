@@ -46,16 +46,22 @@
     <Folder Include="NextDisk\templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="NextDisk\static\content\bootstrap.min.css" />
+    <Content Include="NextDisk\static\content\bootstrap.min.css.map" />
     <Content Include="NextDisk\static\content\files.css" />
     <Content Include="NextDisk\static\content\Final_setting.css" />
     <Content Include="NextDisk\static\content\fs1.css" />
+    <Content Include="NextDisk\static\content\refresh.apng" />
+    <Content Include="NextDisk\static\content\refresh.png" />
     <Content Include="NextDisk\static\content\registered_successfully.css" />
     <Content Include="NextDisk\static\content\signup.css" />
+    <Content Include="NextDisk\static\scripts\bootstrap.min.js" />
+    <Content Include="NextDisk\static\scripts\bootstrap.min.js.map" />
     <Content Include="NextDisk\static\scripts\Final_setting.js" />
     <Content Include="NextDisk\static\scripts\signup.js" />
     <Content Include="NextDisk\templates\desktop.html" />
     <Content Include="NextDisk\templates\files.html" />
-    <Content Include="NextDisk\templates\Final_setting.html" />
+    <Content Include="NextDisk\templates\ftp.html" />
     <Content Include="NextDisk\templates\login.html" />
     <Content Include="NextDisk\templates\error.html" />
     <Content Include="NextDisk\templates\registered_successfully.html" />
@@ -66,30 +72,12 @@
     <Content Include="NextDisk\templates\signup_user.html" />
     <Content Include="NextDisk\templates\tips.html" />
     <Content Include="requirements.txt" />
-    <Content Include="NextDisk\static\content\bootstrap.css" />
-    <Content Include="NextDisk\static\content\bootstrap.min.css" />
     <Content Include="NextDisk\static\content\site.css" />
     <Content Include="NextDisk\static\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="NextDisk\static\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="NextDisk\static\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="NextDisk\static\fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="NextDisk\static\scripts\bootstrap.js" />
-    <Content Include="NextDisk\static\scripts\bootstrap.min.js" />
-    <Content Include="NextDisk\static\scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="NextDisk\static\scripts\jquery-1.10.2.js" />
-    <Content Include="NextDisk\static\scripts\jquery-1.10.2.min.js" />
-    <Content Include="NextDisk\static\scripts\jquery-1.10.2.min.map" />
-    <Content Include="NextDisk\static\scripts\jquery.validate-vsdoc.js" />
-    <Content Include="NextDisk\static\scripts\jquery.validate.js" />
-    <Content Include="NextDisk\static\scripts\jquery.validate.min.js" />
-    <Content Include="NextDisk\static\scripts\jquery.validate.unobtrusive.js" />
-    <Content Include="NextDisk\static\scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="NextDisk\static\scripts\modernizr-2.6.2.js" />
-    <Content Include="NextDisk\static\scripts\respond.js" />
-    <Content Include="NextDisk\static\scripts\respond.min.js" />
-    <Content Include="NextDisk\static\scripts\_references.js" />
     <Content Include="NextDisk\templates\about.html" />
-    <Content Include="NextDisk\templates\contact.html" />
     <Content Include="NextDisk\templates\index.html" />
     <Content Include="NextDisk\templates\layout.html" />
   </ItemGroup>
